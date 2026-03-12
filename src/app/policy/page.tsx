@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
 import { Globe, BarChart3, Activity, ArrowUpRight, ArrowDownRight, Users } from 'lucide-react';
