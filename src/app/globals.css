@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f8fafc;
+  --color-brand-100: #f1f5f9;
+  --color-brand-500: #10b981; 
+  --color-brand-600: #059669;
+  
+  --color-nutri-a: #00a86b; /* Sleek Green */
+  --color-nutri-b: #8cd33f; /* Fresh Lime */
+  --color-nutri-c: #ffcc33; /* Soft Gold */
+  --color-nutri-d: #f28500; /* Deep Orange */
+  --color-nutri-e: #e31e24; /* Bold Red */
+
+  --color-overlay-light: rgba(255, 255, 255, 0.7);
+  --color-overlay-dark: rgba(15, 23, 42, 0.05);
+  
+  --font-sans: "Inter", "Outfit", system-ui, sans-serif;
+  --font-mono: "Space Mono", monospace;
+  
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-3xl: 40px;
+}
+
+@layer base {
+  body {
+    @apply bg-[#f1f5f9] text-slate-900 antialiased; /* Very light cool gray */
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+  }
+  .glass-dark {
+    @apply bg-slate-900/90 backdrop-blur-2xl border border-white/10 shadow-2xl text-white;
+  }
+  .sleek-card {
+    @apply bg-white border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] rounded-3xl transition-all duration-300;
+  }
+  .color-splash {
+    @apply absolute pointer-events-none blur-[100px] opacity-20 rounded-full;
+  }
+  .nutri-label {
+    @apply font-sans font-black tracking-tight uppercase italic;
+  }
+}
