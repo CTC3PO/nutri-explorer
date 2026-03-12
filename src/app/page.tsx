@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from 'react';
-import { Camera, Upload, Zap, ChevronLeft, Info, AlertTriangle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Camera, Upload, Zap, ChevronLeft, Info, AlertTriangle, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScanResult {
@@ -15,11 +15,38 @@ interface ScanResult {
   score?: number;
 }
 
+interface HistoryItem {
+  id: number;
+  product_name: string;
+  nutri_score: string;
+  created_at: string;
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  return `${Math.floor(mins / 60)}h ago`;
+}
+
 export default function ScannerPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [recentScans, setRecentScans] = useState<HistoryItem[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    import('@/lib/supabase').then(({ supabase }) => {
+      supabase
+        .from('scan_history')
+        .select('id, product_name, nutri_score, created_at')
+        .order('created_at', { ascending: false })
+        .limit(5)
+        .then(({ data }) => { if (data) setRecentScans(data as HistoryItem[]); });
+    });
+  }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -202,6 +229,43 @@ export default function ScannerPage() {
                <button onClick={triggerUpload} className="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-medium text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm">
                  <Upload size={16} /> Open Gallery
                </button>
+            </div>
+          </div>
+        )}
+
+        {/* Recent Scans Panel */}
+        {recentScans.length > 0 && !result && (
+          <div className="w-full max-w-[340px] mt-8">
+            <div className="flex items-center gap-2 mb-3 px-1">
+              <Clock size={14} className="text-slate-400" />
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Recent Scans</p>
+            </div>
+            <div className="space-y-2">
+              <AnimatePresence>
+                {recentScans.map((item, i) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="bg-white border border-slate-100 rounded-2xl p-3 flex items-center gap-3 shadow-sm"
+                  >
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-white shrink-0 ${
+                      item.nutri_score === 'A' ? 'bg-nutri-a' :
+                      item.nutri_score === 'B' ? 'bg-nutri-b' :
+                      item.nutri_score === 'C' ? 'bg-nutri-c' :
+                      item.nutri_score === 'D' ? 'bg-nutri-d' :
+                      'bg-nutri-e'
+                    }`}>
+                      {item.nutri_score}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-800 truncate">{item.product_name}</p>
+                      <p className="text-xs text-slate-400">{timeAgo(item.created_at)}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
         )}
