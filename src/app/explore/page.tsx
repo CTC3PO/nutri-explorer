@@ -75,19 +75,25 @@ export default function ExplorePage() {
     }
 
     try {
-      const from = pageNum * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
+      const res = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}&page=${pageNum + 1}`);
+      const apiData = await res.json();
 
-      const { data, error, count } = await supabase
-        .from('products')
-        .select('*', { count: 'exact' })
-        .ilike('name', `%${searchTerm}%`)
-        .range(from, to);
+      let fetchedData: Product[] = apiData.products || [];
+      let serverHasMore = apiData.hasMore ?? false;
 
-      if (error) throw error;
+      // Fallback to Supabase local database if OpenFoodFacts search yields 0 items on page 0
+      if (fetchedData.length === 0 && pageNum === 0) {
+        const { data: sbData } = await supabase
+          .from('products')
+          .select('*')
+          .ilike('name', `%${searchTerm}%`);
 
-      const fetchedData = (data || []) as Product[];
-      
+        if (sbData && sbData.length > 0) {
+          fetchedData = sbData as Product[];
+          serverHasMore = false;
+        }
+      }
+
       if (isInitial) {
         setProducts(fetchedData);
       } else {
@@ -95,14 +101,7 @@ export default function ExplorePage() {
       }
 
       setPage(pageNum);
-      
-      // Check if we've loaded all available products
-      if (count !== null && fetchedData.length < PAGE_SIZE) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
-
+      setHasMore(serverHasMore);
     } catch (err) {
       console.error("Search error:", err);
     } finally {
