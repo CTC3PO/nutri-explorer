@@ -8,7 +8,6 @@
 [![Open Food Facts](https://img.shields.io/badge/Database-3.2M%20Products-orange?style=flat-square)](https://world.openfoodfacts.org/)
 [![Nutri-Score 2024](https://img.shields.io/badge/Algorithm-Santé%20Publique%20France-green?style=flat-square)](https://www.santepubliquefrance.fr/)
 
-**Live Demo**: [nutrivision.vercel.app](https://nutrivision.vercel.app)
 
 ---
 
