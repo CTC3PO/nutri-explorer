@@ -29,7 +29,7 @@ For everyday shoppers, reading 6-point font nutrition labels and cross-checking 
 
 ### Key Features
 
-1. **VLM Package Scanning & Visual Grounding**: Upload or scan a package photo to extract macros, ingredients, and normalized 2D bounding boxes `[ymin, xmin, ymax, xmax]` that visually highlight nutrition tables and key callouts directly on the product image.
+1. **VLM Package Scanning & Visual Grounding**: Upload or scan a package photo to extract macros, ingredients, and normalized 2D bounding boxes that visually highlight nutrition tables and key callouts directly on the product image.
 2. **Recipe Reformulation Sandbox (Producer Lab)**: Test "What-If" recipe changes with interactive sliders for sugar, saturated fat, sodium, and protein/fiber, watching the Nutri-Score and UK/EU HFSS compliance recalculate in real time.
 3. **Marketing Claims vs. Reality Fact-Checker**: Automatically evaluates front-of-box claims (e.g., *"All Natural"*, *"High Protein"*, *"Heart Healthy"*) against statutory **FDA, FTC, and EFSA** regulatory standards.
 4. **Hybrid 406 Catalog + 3.2M Open Food Facts API**: Instant sub-5ms lookups for 406 curated benchmark foods, with live federated search across 3.2 million global products from Open Food Facts.
@@ -44,15 +44,15 @@ Different users need different depth from nutritional data:
 ```mermaid
 flowchart TD
     subgraph Stakeholders [Stakeholder Views]
-        Shopper[🛒 1. Health-Conscious Shopper]
-        Formulator[🧪 2. Food Brand Formulator / R&D]
-        Dietitian[🔬 3. Clinical Dietitian & Patient]
+        Shopper["🛒 1. Health-Conscious Shopper"]
+        Formulator["🧪 2. Food Brand Formulator / R&D"]
+        Dietitian["🔬 3. Clinical Dietitian & Patient"]
     end
 
     subgraph Solutions [Tailored Outputs]
-        Shopper --> S1[Visual Bounding Boxes + Deceptive Claim Fact-Checker + 1-Click Healthier Swaps]
-        Formulator --> S2[Reformulation Sandbox: Live Nutri-Score Shift & UK/EU HFSS Compliance]
-        Dietitian --> S3[Ingredient Deconstruction Volume Bars + Allergen Audit + 1-Page PDF Dossier]
+        Shopper --> S1["Visual Bounding Boxes + Deceptive Claim Fact-Checker + 1-Click Healthier Swaps"]
+        Formulator --> S2["Reformulation Sandbox: Live Nutri-Score Shift & UK/EU HFSS Compliance"]
+        Dietitian --> S3["Ingredient Deconstruction Volume Bars + Allergen Audit + 1-Page PDF Dossier"]
     end
 ```
 
@@ -79,41 +79,35 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    UserPhoto[User Uploads Package Photo / Barcode / Query] --> Ingestion{Ingestion Pipeline}
+    UserPhoto["User Uploads Package Photo / Barcode / Query"] --> Ingestion{"Ingestion Pipeline"}
 
     subgraph Edge_VLM [Multimodal Vision & Extraction]
-        Ingestion -->|Package Photo| VLM[Gemini 2.0 Flash VLM]
-        VLM --> BBoxes[Extract 2D Bounding Boxes: [ymin, xmin, ymax, xmax]]
-        VLM --> RawJSON[Extract Macro Key-Values & Ingredients List]
+        Ingestion -->|Package Photo| VLM["Gemini 2.0 Flash VLM"]
+        VLM --> BBoxes["Extract 2D Bounding Boxes: (ymin, xmin, ymax, xmax)"]
+        VLM --> RawJSON["Extract Macro Key-Values & Ingredients List"]
     end
 
     subgraph Hybrid_Catalog [Unified Search & Catalog Bridge]
-        Ingestion -->|Text / Barcode Query| SearchRouter{Search Router}
-        SearchRouter --> Local406[(406-Item Curated Verified Catalog <5ms)]
-        SearchRouter --> LiveOFF[(3.2M Open Food Facts Global API)]
-        Local406 & LiveOFF --> Deduplicate[Deduplication & Schema Normalizer]
+        Ingestion -->|Text / Barcode Query| SearchRouter{"Search Router"}
+        SearchRouter --> Local406[("406-Item Curated Verified Catalog (<5ms)")]
+        SearchRouter --> LiveOFF[("3.2M Open Food Facts Global API")]
+        Local406 & LiveOFF --> Deduplicate["Deduplication & Schema Normalizer"]
     end
 
     subgraph Food_Science_Engine [Deterministic Algorithmic Solver]
-        RawJSON & Deduplicate --> NutriScoreCalc[Official Santé Publique France Nutri-Score 2024 Engine]
-        NutriScoreCalc --> NOVAScore[NOVA 1-4 Ultra-Processed Classification]
-        NutriScoreCalc --> AllergenSolver[Deterministic Allergen & Medical Profile Conflict Check]
-        NutriScoreCalc --> RiskGraph[EFSA / FDA Chemical Additive Risk Audit]
+        RawJSON & Deduplicate --> NutriScoreCalc["Official Santé Publique France Nutri-Score 2024 Engine"]
+        NutriScoreCalc --> NOVAScore["NOVA 1-4 Ultra-Processed Classification"]
+        NutriScoreCalc --> AllergenSolver["Deterministic Allergen & Medical Profile Conflict Check"]
+        NutriScoreCalc --> RiskGraph["EFSA / FDA Chemical Additive Risk Audit"]
     end
 
     subgraph Interactive_Workbench [Client-Side Workbench & Tools]
-        BBoxes & NutriScoreCalc & AllergenSolver --> UI([NutriVision Workbench UI])
-        UI --> Sandbox[Recipe Reformulation Lab Slider Simulator]
-        UI --> CompareTray[Side-by-Side Multi-Product Comparison Tray]
-        UI --> PrintDossier[Exportable 1-Page Clinical Nutrition Dossier]
+        BBoxes & NutriScoreCalc & AllergenSolver --> UI(["NutriVision Workbench UI"])
+        UI --> Sandbox["Recipe Reformulation Lab Slider Simulator"]
+        UI --> CompareTray["Side-by-Side Multi-Product Comparison Tray"]
+        UI --> PrintDossier["Exportable 1-Page Clinical Nutrition Dossier"]
     end
 ```
-
-### Engineering & Food Science Highlights
-* **Deterministic Nutri-Score 2024 Solver**: Implements the official Santé Publique France 2024 updated algorithm (with stricter limits for sugar, salt, and red meat) entirely in TypeScript for instant client/edge execution.
-* **Spatial Coordinate Visual Grounding**: Prompts Gemini 2.0 Flash with a structured JSON schema to return normalized `[0, 1000]` bounding boxes, rendered client-side as crisp SVG overlays over high-resolution package images.
-* **Zero-Hallucination Allergen Audit**: Uses deterministic keyword and taxonomy mapping against curated medical conflict databases rather than relying on unstructured LLM text generation for safety-critical allergies.
-* **Hybrid Search Strategy**: Sub-5ms local cache for curated benchmark foods with transparent fallback and live query federation across 3.2M Open Food Facts entries.
 
 ### Tech Stack & Repository Structure
 * **Frontend**: Next.js 15 (App Router), React 19, TypeScript 5, Tailwind CSS 4
@@ -155,19 +149,6 @@ _4_nutri-explore/_codebase/
 ├── public/samples/                      # High-resolution local package photos
 └── README.md
 ```
-
-
----
-
-## Performance & Evaluation Benchmarks
-
-| Metric | Target | Measured Result | Status |
-| :--- | :---: | :---: | :---: |
-| **Local Catalog Query Latency** | `< 10ms` | **`< 3.5ms`** | ✅ Passed |
-| **Open Food Facts API Ingestion** | `< 500ms` | **`~240ms`** | ✅ Passed |
-| **Nutri-Score Exact Match** | `100%` | **`100% (50/50 test cases)`** | ✅ Passed |
-| **UI Framerate (60 FPS Animation)** | `60 FPS` | **`60 FPS`** | ✅ Passed |
-| **Zero-Hallucination Allergen Accuracy**| `100%` | **`100% (Deterministic Match)`** | ✅ Passed |
 
 ---
 
