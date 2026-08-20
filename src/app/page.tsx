@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { HOUSEHOLD_PRODUCTS, COUNTRY_INTELLIGENCE, CountryIntelligence } from "@/lib/mock-data";
+import { HOUSEHOLD_PRODUCTS } from "@/lib/mock-data";
 import { NutriVisionAnalysis } from "@/shared/types/nutrivision";
 import { VisualGroundingCanvas } from "@/features/scanner/VisualGroundingCanvas";
 import { NutriScoreGauge } from "@/features/nutrition/NutriScoreGauge";
@@ -16,7 +16,6 @@ import {
   Layers, 
   Scan, 
   FlaskConical, 
-  Globe2, 
   Scale, 
   Search, 
   Upload, 
@@ -33,7 +32,7 @@ import {
   Info
 } from "lucide-react";
 
-type MainTab = "deconstruction" | "shopper" | "producer" | "country_markets" | "comparison";
+type MainTab = "deconstruction" | "shopper" | "producer" | "comparison";
 
 export default function NutriVisionWorkbench() {
   // 1. Core Product & Tab State (Default: 'deconstruction' / Inside the Box)
@@ -57,10 +56,6 @@ export default function NutriVisionWorkbench() {
     HOUSEHOLD_PRODUCTS.us_nutella,
   ].filter(Boolean));
 
-  // Country Market Tab State
-  const [selectedCountryMarket, setSelectedCountryMarket] = useState<string>("United States");
-  const [countryCategoryFilter, setCountryCategoryFilter] = useState<string>("ALL");
-
   // User Dietary Profile State
   const [dietaryProfile, setDietaryProfile] = useState<DietaryProfile>({
     glutenFree: false,
@@ -74,13 +69,6 @@ export default function NutriVisionWorkbench() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  const productList = useMemo(() => {
-    return Object.entries(HOUSEHOLD_PRODUCTS).map(([key, item]) => ({
-      key,
-      ...item,
-    }));
-  }, []);
 
   const iconicPresets = [
     { key: "us_nutella", name: "Nutella Spread", grade: "E", icon: "🌰", tag: "56% Sugar" },
@@ -280,18 +268,6 @@ export default function NutriVisionWorkbench() {
         return "bg-slate-300 text-slate-700";
     }
   };
-
-  const activeCountryData = useMemo(() => {
-    return COUNTRY_INTELLIGENCE.find((c) => c.country === selectedCountryMarket) || COUNTRY_INTELLIGENCE[0];
-  }, [selectedCountryMarket]);
-
-  const countryProducts = useMemo(() => {
-    return productList.filter((p: any) => {
-      const matchesCountry = p.country === selectedCountryMarket;
-      const matchesCat = countryCategoryFilter === "ALL" || p.category === countryCategoryFilter;
-      return matchesCountry && matchesCat;
-    });
-  }, [productList, selectedCountryMarket, countryCategoryFilter]);
 
   return (
     <div className="min-h-screen bg-[#EEF2F6] p-3 sm:p-6 lg:p-8 flex items-center justify-center font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
@@ -518,7 +494,7 @@ export default function NutriVisionWorkbench() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. DISTINCT TABS (Clean, Non-AI Domain Terms)                             */}
+        {/* 3. DISTINCT FOOD EXPLORATION TABS                                         */}
         {/* ========================================================================= */}
         <nav className="px-6 bg-white border-b border-slate-200 flex items-center justify-between gap-4 overflow-x-auto">
           <div className="flex items-center gap-1">
@@ -564,20 +540,7 @@ export default function NutriVisionWorkbench() {
               <span>🧪 Recipe Reformulation</span>
             </button>
 
-            {/* Tab 4: Global Policy & Country Adoption */}
-            <button
-              onClick={() => setActiveTab("country_markets")}
-              className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
-                activeTab === "country_markets"
-                  ? "text-blue-700 border-blue-600 font-black bg-blue-50/40"
-                  : "text-slate-500 border-transparent hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Globe2 size={15} className={activeTab === "country_markets" ? "text-blue-600" : "text-slate-400"} />
-              <span>🌍 Country Nutrition Data</span>
-            </button>
-
-            {/* Tab 5: Side-by-Side Comparison */}
+            {/* Tab 4: Side-by-Side Comparison */}
             <button
               onClick={() => setActiveTab("comparison")}
               className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
@@ -587,14 +550,14 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <Scale size={15} className={activeTab === "comparison" ? "text-amber-600" : "text-slate-400"} />
-              <span>⚖️ Comparison ({comparisonList.length})</span>
+              <span>⚖️ Product Comparison ({comparisonList.length})</span>
             </button>
           </div>
 
           <div className="text-[11px] font-medium text-slate-400 hidden xl:flex items-center gap-2">
             <span>Revised Nutri-Score 2024 Formula</span>
             <span>•</span>
-            <span>Open Food Facts + World Bank</span>
+            <span>Open Food Facts Database</span>
           </div>
         </nav>
 
@@ -720,161 +683,7 @@ export default function NutriVisionWorkbench() {
             </div>
           )}
 
-          {/* TAB 4: COUNTRY NUTRITION DATA */}
-          {activeTab === "country_markets" && (
-            <div className="flex flex-col gap-6 animate-in fade-in duration-200">
-              {/* Country Selector Strip */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                {COUNTRY_INTELLIGENCE.map((c) => {
-                  const isSelected = selectedCountryMarket === c.country;
-                  return (
-                    <button
-                      key={c.country}
-                      onClick={() => setSelectedCountryMarket(c.country)}
-                      className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 border ${
-                        isSelected
-                          ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <span className="text-base">{c.flag}</span>
-                      <span>{c.country}</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-black">
-                        {c.adoptionScore.toFixed(0)} pts
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Country Health & Adoption Card */}
-              <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white rounded-3xl p-6 shadow-md border border-slate-800">
-                <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
-                  <div className="flex items-center gap-3.5">
-                    <span className="text-3xl">{activeCountryData.flag}</span>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-lg font-black">{activeCountryData.country} Nutrition Profile</h2>
-                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                          {activeCountryData.adoptionCategory}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-300 mt-1 max-w-2xl">{activeCountryData.insights}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 shrink-0">
-                    <div className="bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl text-right">
-                      <span className="text-[10px] text-slate-400 block">Adoption Score</span>
-                      <span className="font-mono font-black text-emerald-400 text-base">
-                        {activeCountryData.adoptionScore.toFixed(1)}/100
-                      </span>
-                    </div>
-                    <div className="bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl text-right">
-                      <span className="text-[10px] text-slate-400 block">Obesity Rate</span>
-                      <span className="font-mono font-black text-amber-400 text-base">
-                        {activeCountryData.obesityPrevalence}%
-                      </span>
-                    </div>
-                    <div className="bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl text-right">
-                      <span className="text-[10px] text-slate-400 block">GDP / Capita</span>
-                      <span className="font-mono font-bold text-slate-200 text-base">
-                        ${activeCountryData.gdpPerCapita.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl text-right">
-                      <span className="text-[10px] text-slate-400 block">Food Quality Index</span>
-                      <span className="font-mono font-bold text-sky-400 text-base">
-                        {activeCountryData.nutriQualityIndex.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Nutri-Score Distribution Bar */}
-                <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-4 text-xs">
-                  <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider">
-                    Grade Distribution ({activeCountryData.totalProducts.toLocaleString()} items analyzed):
-                  </span>
-                  <div className="flex-1 max-w-md h-2.5 rounded-full overflow-hidden bg-slate-800 flex gap-0.5">
-                    <div style={{ width: `${activeCountryData.gradeDistribution.A}%` }} className="bg-emerald-500 h-full" title={`A: ${activeCountryData.gradeDistribution.A}%`} />
-                    <div style={{ width: `${activeCountryData.gradeDistribution.B}%` }} className="bg-lime-500 h-full" title={`B: ${activeCountryData.gradeDistribution.B}%`} />
-                    <div style={{ width: `${activeCountryData.gradeDistribution.C}%` }} className="bg-amber-400 h-full" title={`C: ${activeCountryData.gradeDistribution.C}%`} />
-                    <div style={{ width: `${activeCountryData.gradeDistribution.D}%` }} className="bg-orange-500 h-full" title={`D: ${activeCountryData.gradeDistribution.D}%`} />
-                    <div style={{ width: `${activeCountryData.gradeDistribution.E}%` }} className="bg-rose-500 h-full" title={`E: ${activeCountryData.gradeDistribution.E}%`} />
-                  </div>
-                  <span className="font-mono text-slate-400 text-[11px]">
-                    Grade A: {activeCountryData.gradeDistribution.A}% • D/E: {(activeCountryData.gradeDistribution.D + activeCountryData.gradeDistribution.E).toFixed(1)}%
-                  </span>
-                </div>
-              </div>
-
-              {/* Country Representative Products Grid */}
-              <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                  <div>
-                    <h3 className="font-bold text-base text-slate-900">
-                      Representative Products from {activeCountryData.country}
-                    </h3>
-                    <p className="text-xs text-slate-500">Staples from Open Food Facts</p>
-                  </div>
-
-                  <div className="flex items-center gap-1 text-xs">
-                    {["ALL", "Breakfast & Cereals", "Sauces, Spreads & Pantry", "Dairy & Plant Alternatives", "Bars & Healthy Snacks"].map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setCountryCategoryFilter(cat)}
-                        className={`px-2.5 py-1 rounded-xl font-bold transition-all ${
-                          countryCategoryFilter === cat
-                            ? "bg-slate-900 text-white"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                        }`}
-                      >
-                        {cat === "ALL" ? "All Categories" : cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {countryProducts.map((prod: any) => {
-                    const isSelected = analysis.productName === prod.productName;
-                    return (
-                      <div
-                        key={prod.key}
-                        onClick={() => {
-                          handleSelectProduct(prod.key);
-                          setActiveTab("deconstruction");
-                        }}
-                        className={`bg-slate-50 hover:bg-white rounded-2xl border p-4 flex flex-col justify-between transition-all cursor-pointer ${
-                          isSelected
-                            ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-md bg-white"
-                            : "border-slate-200 hover:border-slate-300 hover:shadow-xs"
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className={`w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center ${getGradeBadge(prod.nutriScore)}`}>
-                              {prod.nutriScore}
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-400">NOVA {prod.novaScore}</span>
-                          </div>
-                          <h4 className="font-bold text-xs text-slate-900 line-clamp-1">{prod.productName}</h4>
-                          <p className="text-[11px] text-slate-500 truncate mb-2">{prod.brand}</p>
-                        </div>
-                        <div className="pt-2 border-t border-slate-200/70 flex items-center justify-between text-[11px]">
-                          <span className="text-slate-600">{prod.calories} kcal</span>
-                          <span className="font-bold text-emerald-700">{prod.sugars}g sugar</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 5: SIDE-BY-SIDE COMPARISON */}
+          {/* TAB 4: SIDE-BY-SIDE COMPARISON */}
           {activeTab === "comparison" && (
             <div className="animate-in fade-in duration-200">
               <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col gap-6">
