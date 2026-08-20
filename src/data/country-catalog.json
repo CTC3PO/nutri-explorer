@@ -1,0 +1,2181 @@
+{
+  "us_honeycrisp_apple": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Fresh Honeycrisp Apple",
+    "brand": "Stemilt Growers",
+    "category": "Fresh Produce",
+    "servingSize": "1 medium apple (100g)",
+    "calories": 52,
+    "energy": 218,
+    "sugars": 10.4,
+    "saturatedFat": 0.1,
+    "sodium": 1,
+    "protein": 0.3,
+    "fiber": 2.4,
+    "fruitVegetablesPercentage": 100,
+    "nutriScore": "A",
+    "nutriScoreRaw": -5,
+    "novaScore": 1,
+    "novaDescription": "Unprocessed whole fruit with natural pectin matrix.",
+    "imageUrl": "/samples/apple.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "100% Fresh Washington Honeycrisp Apple"
+    ],
+    "additives": [],
+    "allergens": [],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 52,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 0.1,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 1,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 10.4,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "100% Whole Fruit",
+        "verdict": "verified",
+        "reality": "Zero added sugars, rich in soluble pectin fiber.",
+        "regulatoryStandard": "FDA 21 CFR 101.9"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Fresh Apple Flesh & Skin",
+        "percentage": 100,
+        "color": "bg-emerald-600",
+        "origin": "Washington State Orchards",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Slow glycemic absorption due to cellular pectin."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_honeycrisp_apple-1",
+        "name": "Organic Blueberries",
+        "brand": "Driscolls",
+        "nutriScore": "A",
+        "novaScore": 1,
+        "calories": 57,
+        "sugars": 9.9,
+        "vectorMatchPercent": 96,
+        "tag": "Antioxidant Rich",
+        "image": "\ud83e\uded0"
+      }
+    ]
+  },
+  "us_quaker_oats": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Old Fashioned Rolled Oats",
+    "brand": "Quaker Oats",
+    "category": "Breakfast & Cereals",
+    "servingSize": "1/2 cup dry (40g)",
+    "calories": 375,
+    "energy": 1569,
+    "sugars": 1.0,
+    "saturatedFat": 1.2,
+    "sodium": 3,
+    "protein": 13.0,
+    "fiber": 10.0,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "A",
+    "nutriScoreRaw": -4,
+    "novaScore": 1,
+    "novaDescription": "Minimally processed 100% whole grain oat groats.",
+    "imageUrl": "/samples/quaker_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "100% Whole Grain Rolled Oats"
+    ],
+    "additives": [],
+    "allergens": [],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 375,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 1.2,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 3,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 1.0,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Heart Healthy 100% Whole Grain",
+        "verdict": "verified",
+        "reality": "Contains 3g beta-glucan soluble fiber known to lower LDL cholesterol.",
+        "regulatoryStandard": "FDA Authorized Health Claim 21 CFR 101.81"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Whole Rolled Oat Groats",
+        "percentage": 100,
+        "color": "bg-amber-600",
+        "origin": "Midwest Agricultural Harvest",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "High beta-glucan lowers blood glucose spikes."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_quaker_oats-1",
+        "name": "Steel Cut Oats",
+        "brand": "Bobs Red Mill",
+        "nutriScore": "A",
+        "novaScore": 1,
+        "calories": 370,
+        "sugars": 0.8,
+        "vectorMatchPercent": 98,
+        "tag": "Lowest Glycemic Index",
+        "image": "\ud83e\udd63"
+      }
+    ]
+  },
+  "us_chobani_greek": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Non-Fat Plain Greek Yogurt",
+    "brand": "Chobani",
+    "category": "Dairy & Plant Alternatives",
+    "servingSize": "1 container (150g)",
+    "calories": 59,
+    "energy": 247,
+    "sugars": 3.6,
+    "saturatedFat": 0.0,
+    "sodium": 36,
+    "protein": 10.3,
+    "fiber": 0.0,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "A",
+    "nutriScoreRaw": -3,
+    "novaScore": 1,
+    "novaDescription": "Cultured strained pasteurized nonfat milk.",
+    "imageUrl": "/samples/chobani_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Cultured Pasteurized Nonfat Milk",
+      "Live and Active Cultures (S. Thermophilus, L. Bulgaricus, L. Acidophilus, Bifidus)"
+    ],
+    "additives": [],
+    "allergens": [
+      {
+        "id": "dairy",
+        "name": "Dairy",
+        "detected": true,
+        "icon": "\ud83e\udd5b",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 59,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 0.0,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 36,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 3.6,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Triple Strained & High Protein",
+        "verdict": "verified",
+        "reality": "16g protein per cup with 0g added sugar.",
+        "regulatoryStandard": "FDA Grade A Pasteurized"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Pasteurized Skim Milk",
+        "percentage": 98,
+        "color": "bg-sky-600",
+        "origin": "New York Dairy Farms",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "High casein & whey content promotes satiety."
+      },
+      {
+        "id": "i2",
+        "name": "Live Probiotic Cultures",
+        "percentage": 2,
+        "color": "bg-emerald-600",
+        "origin": "Bacterial Fermentation",
+        "processing": "Minimally Processed",
+        "metabolicImpact": "Supports gut microbiome biodiversity."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_chobani_greek-1",
+        "name": "Siggi Icelandic Skyr",
+        "brand": "Siggis",
+        "nutriScore": "A",
+        "novaScore": 1,
+        "calories": 55,
+        "sugars": 3.0,
+        "vectorMatchPercent": 94,
+        "tag": "Higher Protein",
+        "image": "\ud83e\udd5b"
+      }
+    ]
+  },
+  "us_kind_dark_chocolate": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Dark Chocolate Nuts & Sea Salt Bar",
+    "brand": "KIND Snacks",
+    "category": "Bars & Healthy Snacks",
+    "servingSize": "1 bar (40g)",
+    "calories": 500,
+    "energy": 2092,
+    "sugars": 12.5,
+    "saturatedFat": 7.5,
+    "sodium": 350,
+    "protein": 15.0,
+    "fiber": 17.5,
+    "fruitVegetablesPercentage": 42,
+    "nutriScore": "B",
+    "nutriScoreRaw": 2,
+    "novaScore": 3,
+    "novaDescription": "Processed snack bar made with whole almonds and chicory root fiber.",
+    "imageUrl": "/samples/kind_bar_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Almonds",
+      "Dark Chocolate Coating (Sugar, Cocoa Butter, Soy Lecithin)",
+      "Chicory Root Fiber",
+      "Honey",
+      "Palm Kernel Oil",
+      "Sea Salt"
+    ],
+    "additives": [
+      {
+        "code": "E322",
+        "name": "Soy Lecithin",
+        "riskLevel": "low",
+        "origin": "Soybean extraction",
+        "citation": "EFSA GRAS",
+        "safetySummary": "Common emulsifier."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "tree_nuts",
+        "name": "Almonds",
+        "detected": true,
+        "icon": "\ud83c\udf30",
+        "confidence": 0.99
+      },
+      {
+        "id": "soy",
+        "name": "Soy",
+        "detected": true,
+        "icon": "\ud83c\udf31",
+        "confidence": 0.95
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 500,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 7.5,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 350,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 12.5,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "5g Sugar Only \u2022 #1 Ingredient Almonds",
+        "verdict": "verified",
+        "reality": "High whole nut proportion provides healthy fats and high dietary fiber.",
+        "regulatoryStandard": "FDA Standard 21 CFR 101.54"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Whole Roasted Almonds",
+        "percentage": 42,
+        "color": "bg-amber-700",
+        "origin": "California Almond Groves",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Monounsaturated oleic fats stabilize energy."
+      },
+      {
+        "id": "i2",
+        "name": "Chicory Root Prebiotic Fiber",
+        "percentage": 25,
+        "color": "bg-emerald-600",
+        "origin": "Inulin Plant Extraction",
+        "processing": "Minimally Processed",
+        "metabolicImpact": "Feeds beneficial bifidobacteria in lower gut."
+      },
+      {
+        "id": "i3",
+        "name": "Dark Chocolate Matrix",
+        "percentage": 20,
+        "color": "bg-stone-800",
+        "origin": "Cocoa & Sugar",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Provides polyphenols; contains small sugar payload."
+      },
+      {
+        "id": "i4",
+        "name": "Honey & Sea Salt Binder",
+        "percentage": 13,
+        "color": "bg-amber-400",
+        "origin": "Natural Sweetener",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Fast glycemic conversion."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_kind_dark_chocolate-1",
+        "name": "RXBAR Sea Salt",
+        "brand": "RXBAR",
+        "nutriScore": "A",
+        "novaScore": 1,
+        "calories": 410,
+        "sugars": 10.0,
+        "vectorMatchPercent": 91,
+        "tag": "Zero Added Sugars",
+        "image": "\ud83c\udf6b"
+      }
+    ]
+  },
+  "us_froot_loops": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Froot Loops Breakfast Cereal",
+    "brand": "Kelloggs",
+    "category": "Breakfast & Cereals",
+    "servingSize": "1 1/3 cup (39g)",
+    "calories": 385,
+    "energy": 1611,
+    "sugars": 30.8,
+    "saturatedFat": 1.3,
+    "sodium": 538,
+    "protein": 5.1,
+    "fiber": 5.1,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "D",
+    "nutriScoreRaw": 14,
+    "novaScore": 4,
+    "novaDescription": "Ultra-processed cereal formulation extruded with refined sugars and synthetic azo dyes.",
+    "imageUrl": "/samples/froot_loops_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Corn Flour Blend",
+      "Sugar",
+      "Wheat Flour",
+      "Whole Grain Oat Flour",
+      "Modified Food Starch",
+      "Hydrogenated Vegetable Oil",
+      "Salt",
+      "Red 40",
+      "Yellow 5",
+      "Blue 1",
+      "Yellow 6",
+      "BHT Preservative"
+    ],
+    "additives": [
+      {
+        "code": "E129",
+        "name": "Red 40 (Allura Red)",
+        "riskLevel": "high",
+        "origin": "Petroleum Synthesis",
+        "citation": "EFSA Warning: Southampton 6",
+        "safetySummary": "Synthetic azo dye linked to hyperactivity in children; requires warning label in the EU."
+      },
+      {
+        "code": "E102",
+        "name": "Yellow 5 (Tartrazine)",
+        "riskLevel": "high",
+        "origin": "Petroleum Synthesis",
+        "citation": "EFSA Journal 2009; 7(11):1331",
+        "safetySummary": "Synthetic dye with potential allergenicity and behavioral impact."
+      },
+      {
+        "code": "E321",
+        "name": "BHT (Butylated Hydroxytoluene)",
+        "riskLevel": "moderate",
+        "origin": "Chemical Synthesis",
+        "citation": "IARC Group 3",
+        "safetySummary": "Synthetic antioxidant preservative banned in parts of EU organic food standards."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "gluten",
+        "name": "Wheat Gluten",
+        "detected": true,
+        "icon": "\ud83c\udf3e",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 385,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 1.3,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 538,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 30.8,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Made with Whole Grains!",
+        "verdict": "misleading",
+        "reality": "Refined sugar is the #2 ingredient by weight (31%). Whole grains make up < 15%.",
+        "regulatoryStandard": "FTC Deceptive Advertising Act \u00a7 5"
+      },
+      {
+        "id": "c2",
+        "claim": "Good Source of Vitamin D",
+        "verdict": "exaggerated",
+        "reality": "Synthetic vitamin fortification masked inside a 31% sugar confectionery matrix.",
+        "regulatoryStandard": "FDA Fortification Policy 21 CFR 104.20"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Refined Cane Sugar & Corn Syrup",
+        "percentage": 31,
+        "color": "bg-rose-500",
+        "origin": "Industrial Refined Sugar",
+        "processing": "Ultra-Processed Additive",
+        "metabolicImpact": "Rapid glucose & fructose surge; triggers insulin spike."
+      },
+      {
+        "id": "i2",
+        "name": "Degerminated Corn Flour",
+        "percentage": 30,
+        "color": "bg-amber-400",
+        "origin": "Refined Grain Processing",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Fast-digesting starchy carbohydrates without natural germ."
+      },
+      {
+        "id": "i3",
+        "name": "Refined Wheat & Oat Flour",
+        "percentage": 25,
+        "color": "bg-amber-600",
+        "origin": "Milled Grain",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Moderate starch breakdown."
+      },
+      {
+        "id": "i4",
+        "name": "Hydrogenated Oils & Salt",
+        "percentage": 10,
+        "color": "bg-orange-500",
+        "origin": "Processed Fat",
+        "processing": "Ultra-Processed Additive",
+        "metabolicImpact": "Saturated fat matrix designed for extended shelf life."
+      },
+      {
+        "id": "i5",
+        "name": "Synthetic Dyes (Red 40, Yellow 5, BHT)",
+        "percentage": 4,
+        "color": "bg-purple-600",
+        "origin": "Petrochemical Synthesis",
+        "processing": "Ultra-Processed Additive",
+        "metabolicImpact": "Non-nutritive synthetic coloring and chemical preservative."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_froot_loops-1",
+        "name": "Kashi GO Original",
+        "brand": "Kashi",
+        "nutriScore": "A",
+        "novaScore": 3,
+        "calories": 350,
+        "sugars": 9.0,
+        "vectorMatchPercent": 92,
+        "tag": "70% Less Sugar",
+        "image": "\ud83e\udd63"
+      },
+      {
+        "id": "swap-us_froot_loops-2",
+        "name": "Plain Cheerios",
+        "brand": "General Mills",
+        "nutriScore": "A",
+        "novaScore": 3,
+        "calories": 370,
+        "sugars": 3.5,
+        "vectorMatchPercent": 95,
+        "tag": "Low Sugar Classic",
+        "image": "\ud83e\udd63"
+      }
+    ]
+  },
+  "us_nutella": {
+    "country": "United States",
+    "countryCode": "US",
+    "productName": "Hazelnut Cocoa Spread",
+    "brand": "Nutella (Ferrero)",
+    "category": "Sauces, Spreads & Pantry",
+    "servingSize": "2 tbsp (37g)",
+    "calories": 539,
+    "energy": 2255,
+    "sugars": 56.3,
+    "saturatedFat": 10.6,
+    "sodium": 42,
+    "protein": 6.3,
+    "fiber": 3.0,
+    "fruitVegetablesPercentage": 13,
+    "nutriScore": "E",
+    "nutriScoreRaw": 23,
+    "novaScore": 4,
+    "novaDescription": "Ultra-processed emulsion of sugar and palm oil with added cocoa and hazelnut paste.",
+    "imageUrl": "/samples/nutella_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Sugar",
+      "Palm Oil",
+      "Hazelnuts (13%)",
+      "Skimmed Milk Powder (8.7%)",
+      "Fat-Reduced Cocoa (7.4%)",
+      "Soy Lecithin Emulsifier",
+      "Vanillin Artificial Flavor"
+    ],
+    "additives": [
+      {
+        "code": "E322",
+        "name": "Soy Lecithin",
+        "riskLevel": "low",
+        "origin": "Soybean extraction",
+        "citation": "EFSA GRAS",
+        "safetySummary": "Common emulsifier holding oil-sugar emulsion."
+      },
+      {
+        "code": "FL-VAN",
+        "name": "Synthetic Vanillin",
+        "riskLevel": "low",
+        "origin": "Petrochemical synthesis",
+        "citation": "FDA 21 CFR 182.60",
+        "safetySummary": "Synthetic aroma compound mimicking vanilla bean."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "tree_nuts",
+        "name": "Hazelnuts",
+        "detected": true,
+        "icon": "\ud83c\udf30",
+        "confidence": 0.99
+      },
+      {
+        "id": "dairy",
+        "name": "Milk Powder",
+        "detected": true,
+        "icon": "\ud83e\udd5b",
+        "confidence": 0.99
+      },
+      {
+        "id": "soy",
+        "name": "Soy",
+        "detected": true,
+        "icon": "\ud83c\udf31",
+        "confidence": 0.95
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 539,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 10.6,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 42,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 56.3,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Made with Real Hazelnuts & Skim Milk",
+        "verdict": "misleading",
+        "reality": "56.3% of the jar is pure sucrose sugar and 20% refined palm oil. Hazelnuts make up only 13%.",
+        "regulatoryStandard": "NAD / FTC Truth in Advertising"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Refined White Beet/Cane Sugar",
+        "percentage": 56.3,
+        "color": "bg-rose-600",
+        "origin": "Refined Sugar Processing",
+        "processing": "Ultra-Processed Additive",
+        "metabolicImpact": "Extreme fructose & glucose load; major hepatic lipogenesis."
+      },
+      {
+        "id": "i2",
+        "name": "Refined Palm Oil",
+        "percentage": 20.0,
+        "color": "bg-orange-500",
+        "origin": "Fractionated Palm Harvest",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "High palmitic saturated fatty acids linked to LDL elevation."
+      },
+      {
+        "id": "i3",
+        "name": "Roasted Hazelnuts Paste",
+        "percentage": 13.0,
+        "color": "bg-amber-700",
+        "origin": "Turkish Hazelnut Orchards",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Provides natural Vitamin E and monounsaturated oleic fats."
+      },
+      {
+        "id": "i4",
+        "name": "Skimmed Milk Powder",
+        "percentage": 8.7,
+        "color": "bg-sky-600",
+        "origin": "Dairy Spray Drying",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Minor casein and lactose contribution."
+      },
+      {
+        "id": "i5",
+        "name": "Fat-Reduced Cocoa & Vanillin",
+        "percentage": 2.0,
+        "color": "bg-stone-800",
+        "origin": "Cocoa Bean Pressing",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Provides cocoa flavanols."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-us_nutella-1",
+        "name": "Raw Almond Butter (100% Nuts)",
+        "brand": "Artisana Organics",
+        "nutriScore": "B",
+        "novaScore": 1,
+        "calories": 590,
+        "sugars": 4.0,
+        "vectorMatchPercent": 89,
+        "tag": "-92% Less Sugar",
+        "image": "\ud83e\udd5c"
+      },
+      {
+        "id": "swap-us_nutella-2",
+        "name": "Dark Cacao Hazelnut Spread",
+        "brand": "Rigoni di Asiago",
+        "nutriScore": "C",
+        "novaScore": 3,
+        "calories": 480,
+        "sugars": 28.0,
+        "vectorMatchPercent": 93,
+        "tag": "Palm Oil Free",
+        "image": "\ud83c\udf6b"
+      }
+    ]
+  },
+  "fr_organic_baguette": {
+    "country": "France",
+    "countryCode": "FR",
+    "productName": "Pain Tradition Fran\u00e7aise (Baguette)",
+    "brand": "Boulangerie Artisanale",
+    "category": "Breakfast & Cereals",
+    "servingSize": "1 portion (50g)",
+    "calories": 260,
+    "energy": 1088,
+    "sugars": 1.5,
+    "saturatedFat": 0.3,
+    "sodium": 550,
+    "protein": 8.5,
+    "fiber": 3.5,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "B",
+    "nutriScoreRaw": 1,
+    "novaScore": 3,
+    "novaDescription": "Tradition French artisan bread made according to D\u00e9cret Pain 1993 without chemical additives.",
+    "imageUrl": "/samples/lettuce.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Farine de Bl\u00e9 T65",
+      "Eau",
+      "Levain Naturel",
+      "Sel Marin"
+    ],
+    "additives": [],
+    "allergens": [
+      {
+        "id": "gluten",
+        "name": "Wheat Gluten",
+        "detected": true,
+        "icon": "\ud83c\udf3e",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 260,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 0.3,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 550,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 1.5,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "D\u00e9cret Pain 1993 Standard",
+        "verdict": "verified",
+        "reality": "Zero preservatives, artificial enzymes, or added sugars.",
+        "regulatoryStandard": "D\u00e9cret n\u00b093-1074"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Farine de Bl\u00e9 T65 Milled Grain",
+        "percentage": 65,
+        "color": "bg-amber-600",
+        "origin": "French Wheat Fields",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Moderate starch digestion."
+      },
+      {
+        "id": "i2",
+        "name": "Eau de Source",
+        "percentage": 32,
+        "color": "bg-sky-500",
+        "origin": "Natural Spring Water",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Hydration base."
+      },
+      {
+        "id": "i3",
+        "name": "Levain & Sel Marin",
+        "percentage": 3,
+        "color": "bg-emerald-600",
+        "origin": "Fermentation & Sea Salt",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Fermentation lowers phytate content."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-fr_organic_baguette-1",
+        "name": "Pain Complet Bio (Whole Grain)",
+        "brand": "Biocoop",
+        "nutriScore": "A",
+        "novaScore": 2,
+        "calories": 235,
+        "sugars": 1.0,
+        "vectorMatchPercent": 95,
+        "tag": "Higher Fiber",
+        "image": "\ud83e\udd56"
+      }
+    ]
+  },
+  "fr_bonnemaman_confiture": {
+    "country": "France",
+    "countryCode": "FR",
+    "productName": "Confiture Fraises Bio (Strawberry Jam)",
+    "brand": "Bonne Maman",
+    "category": "Sauces, Spreads & Pantry",
+    "servingSize": "1 cuill\u00e8re (20g)",
+    "calories": 240,
+    "energy": 1004,
+    "sugars": 58.0,
+    "saturatedFat": 0.0,
+    "sodium": 10,
+    "protein": 0.5,
+    "fiber": 1.5,
+    "fruitVegetablesPercentage": 50,
+    "nutriScore": "D",
+    "nutriScoreRaw": 12,
+    "novaScore": 3,
+    "novaDescription": "Tradition fruit preserve cooked with 50g whole strawberries per 100g.",
+    "imageUrl": "/samples/granola_label.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Fraises Bio (50%)",
+      "Sucre de Canne Bio",
+      "G\u00e9lifiant: Pectine de Fruits",
+      "Jus de Citron Concentr\u00e9"
+    ],
+    "additives": [
+      {
+        "code": "E440",
+        "name": "Pectine de Fruit",
+        "riskLevel": "low",
+        "origin": "Citrus peel extraction",
+        "citation": "EFSA GRAS",
+        "safetySummary": "Natural plant gelling agent."
+      }
+    ],
+    "allergens": [],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 240,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 0.0,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 10,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 58.0,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "50% Fruits Bio",
+        "verdict": "verified",
+        "reality": "High fruit percentage, but sweetened with 58g cane sugar.",
+        "regulatoryStandard": "EU Organic Regulation (EU) 2018/848"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Sucre de Canne Bio",
+        "percentage": 50,
+        "color": "bg-rose-500",
+        "origin": "Organic Cane Refining",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "High glycemic response."
+      },
+      {
+        "id": "i2",
+        "name": "Fraises Biologiques Enti\u00e8res",
+        "percentage": 48,
+        "color": "bg-rose-600",
+        "origin": "French Berry Farms",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Natural polyphenols and anthocyanins."
+      },
+      {
+        "id": "i3",
+        "name": "Pectine & Citron",
+        "percentage": 2,
+        "color": "bg-emerald-600",
+        "origin": "Citrus Peel",
+        "processing": "Minimally Processed",
+        "metabolicImpact": "Natural gelling matrix."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-fr_bonnemaman_confiture-1",
+        "name": "100% Fruits \u00e0 Tartiner (Zero Added Sugar)",
+        "brand": "St Dalfour",
+        "nutriScore": "B",
+        "novaScore": 2,
+        "calories": 180,
+        "sugars": 42.0,
+        "vectorMatchPercent": 92,
+        "tag": "No Added Sucrose",
+        "image": "\ud83c\udf53"
+      }
+    ]
+  },
+  "ch_lindt_excellence_85": {
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "productName": "Excellence Dark Chocolate 85% Cocoa",
+    "brand": "Lindt & Spr\u00fcngli",
+    "category": "Bars & Healthy Snacks",
+    "servingSize": "4 squares (40g)",
+    "calories": 584,
+    "energy": 2443,
+    "sugars": 11.0,
+    "saturatedFat": 27.0,
+    "sodium": 8,
+    "protein": 11.0,
+    "fiber": 14.0,
+    "fruitVegetablesPercentage": 85,
+    "nutriScore": "D",
+    "nutriScoreRaw": 15,
+    "novaScore": 2,
+    "novaDescription": "High-cocoa mass chocolate with low sugar and high natural cocoa butter.",
+    "imageUrl": "/samples/choco_label.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Cocoa Mass",
+      "Fat-Reduced Cocoa",
+      "Cocoa Butter",
+      "Demerara Sugar",
+      "Natural Bourbon Vanilla Beans"
+    ],
+    "additives": [],
+    "allergens": [
+      {
+        "id": "dairy",
+        "name": "Traces of Milk",
+        "detected": false,
+        "icon": "\ud83e\udd5b",
+        "confidence": 0.8
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 584,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 27.0,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 8,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 11.0,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "85% Pure Cacao \u2022 Low Sugar (11g)",
+        "verdict": "verified",
+        "reality": "Very low sugar compared to milk chocolate; high cocoa flavonoids and fiber (14g).",
+        "regulatoryStandard": "Swiss Federal Food Safety (BLV)"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Pure Cocoa Mass & Butter",
+        "percentage": 85,
+        "color": "bg-stone-900",
+        "origin": "Ecuadorian / Madagascan Cacao",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "High stearic acid; rich in theobromine and epicatechin."
+      },
+      {
+        "id": "i2",
+        "name": "Demerara Raw Cane Sugar",
+        "percentage": 14,
+        "color": "bg-amber-600",
+        "origin": "Cane Sugar",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Minimal glycemic impact due to high fat/fiber buffering."
+      },
+      {
+        "id": "i3",
+        "name": "Bourbon Vanilla Bean Pods",
+        "percentage": 1,
+        "color": "bg-amber-800",
+        "origin": "Madagascar Vanilla Pods",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Natural aroma."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-ch_lindt_excellence_85-1",
+        "name": "Excellence 90% Cocoa",
+        "brand": "Lindt",
+        "nutriScore": "D",
+        "novaScore": 2,
+        "calories": 592,
+        "sugars": 7.0,
+        "vectorMatchPercent": 96,
+        "tag": "Only 7g Sugar",
+        "image": "\ud83c\udf6b"
+      }
+    ]
+  },
+  "ch_ovomaltine_crisp": {
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "productName": "Ovomaltine Crunchy Spread",
+    "brand": "Wander AG",
+    "category": "Sauces, Spreads & Pantry",
+    "servingSize": "1 portion (20g)",
+    "calories": 545,
+    "energy": 2275,
+    "sugars": 48.0,
+    "saturatedFat": 8.5,
+    "sodium": 90,
+    "protein": 4.0,
+    "fiber": 2.5,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "E",
+    "nutriScoreRaw": 21,
+    "novaScore": 4,
+    "novaDescription": "Malt extract and cocoa spread with crispy bits.",
+    "imageUrl": "/samples/choco_label.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Ovomaltine Malt Extract (33%)",
+      "Sugar",
+      "Rapeseed Oil",
+      "Hazelnuts",
+      "Cocoa Powder",
+      "Lecithin"
+    ],
+    "additives": [
+      {
+        "code": "E322",
+        "name": "Sunflower Lecithin",
+        "riskLevel": "low",
+        "origin": "Plant Extraction",
+        "citation": "EFSA GRAS",
+        "safetySummary": "Natural emulsifier."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "gluten",
+        "name": "Barley Malt",
+        "detected": true,
+        "icon": "\ud83c\udf3e",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 545,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 8.5,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 90,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 48.0,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "With 33% Swiss Malt Extract & 11 Vitamins",
+        "verdict": "exaggerated",
+        "reality": "High maltose sugar content; contains 48% total sugars by weight.",
+        "regulatoryStandard": "Swiss Ordinance on Food Information (LIV)"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Sugar & Maltose Extract",
+        "percentage": 48,
+        "color": "bg-rose-500",
+        "origin": "Barley Malt & Cane Sugar",
+        "processing": "Ultra-Processed Additive",
+        "metabolicImpact": "High glycemic load."
+      },
+      {
+        "id": "i2",
+        "name": "Rapeseed & Palm Oil Matrix",
+        "percentage": 32,
+        "color": "bg-orange-500",
+        "origin": "Vegetable Oil Extraction",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Caloric lipid carrier."
+      },
+      {
+        "id": "i3",
+        "name": "Barley & Skim Milk Crunchy Bits",
+        "percentage": 20,
+        "color": "bg-amber-600",
+        "origin": "Swiss Dairy & Grains",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Provides crunch texture."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-ch_ovomaltine_crisp-1",
+        "name": "Swiss Hazelnut Butter (No Added Sugar)",
+        "brand": "Nectaflor",
+        "nutriScore": "B",
+        "novaScore": 1,
+        "calories": 610,
+        "sugars": 3.5,
+        "vectorMatchPercent": 90,
+        "tag": "Pure Nut Spread",
+        "image": "\ud83c\udf30"
+      }
+    ]
+  },
+  "de_alnatura_muesli": {
+    "country": "Germany",
+    "countryCode": "DE",
+    "productName": "Basis M\u00fcsli 5-Korn Bio",
+    "brand": "Alnatura",
+    "category": "Breakfast & Cereals",
+    "servingSize": "1 portion (50g)",
+    "calories": 365,
+    "energy": 1527,
+    "sugars": 1.8,
+    "saturatedFat": 1.1,
+    "sodium": 5,
+    "protein": 12.5,
+    "fiber": 11.2,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "A",
+    "nutriScoreRaw": -6,
+    "novaScore": 1,
+    "novaDescription": "Unprocessed 5-grain organic cereal flakes without added sugar or aromas.",
+    "imageUrl": "/samples/oats_label.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Haferflocken Bio (40%)",
+      "Weizenflocken Bio (20%)",
+      "Gerstenflocken Bio (15%)",
+      "Roggenflocken Bio (15%)",
+      "Dinkelflocken Bio (10%)",
+      "Leinsamen Bio"
+    ],
+    "additives": [],
+    "allergens": [
+      {
+        "id": "gluten",
+        "name": "Wheat, Rye, Barley, Spelt",
+        "detected": true,
+        "icon": "\ud83c\udf3e",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 365,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 1.1,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 5,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 1.8,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Ohne Zuckerzusatz (Zero Added Sugar)",
+        "verdict": "verified",
+        "reality": "100% whole grain organic flakes with 1.8g natural intrinsic sugars.",
+        "regulatoryStandard": "Bioland / Demeter Standard"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "5-Grain Organic Flakes (Oat, Wheat, Barley, Rye, Spelt)",
+        "percentage": 95,
+        "color": "bg-amber-600",
+        "origin": "German Organic Agriculture",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Ultra-slow glycemic release; high prebiotic soluble fiber."
+      },
+      {
+        "id": "i2",
+        "name": "Organic Flaxseeds & Sunflower Seeds",
+        "percentage": 5,
+        "color": "bg-emerald-600",
+        "origin": "Bio Farming",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Provides ALA Omega-3 fatty acids."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-de_alnatura_muesli-1",
+        "name": "K\u00f6ln Haferflocken Zart",
+        "brand": "K\u00f6lln",
+        "nutriScore": "A",
+        "novaScore": 1,
+        "calories": 370,
+        "sugars": 1.0,
+        "vectorMatchPercent": 97,
+        "tag": "Single Grain Classic",
+        "image": "\ud83e\udd63"
+      }
+    ]
+  },
+  "es_barilla_pesto": {
+    "country": "Spain",
+    "countryCode": "ES",
+    "productName": "Pesto Genovese con Albahaca Fresca",
+    "brand": "Barilla",
+    "category": "Sauces, Spreads & Pantry",
+    "servingSize": "1 portion (50g)",
+    "calories": 482,
+    "energy": 2017,
+    "sugars": 5.0,
+    "saturatedFat": 5.5,
+    "sodium": 980,
+    "protein": 5.0,
+    "fiber": 2.0,
+    "fruitVegetablesPercentage": 38,
+    "nutriScore": "C",
+    "nutriScoreRaw": 9,
+    "novaScore": 3,
+    "novaDescription": "Processed basil sauce made with sunflower oil, cashew nuts, and Grana Padano cheese.",
+    "imageUrl": "/samples/barilla_pesto_real.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Sunflower Oil",
+      "Fresh Basil (38%)",
+      "Cashews",
+      "Grana Padano Cheese PDO",
+      "Whey Powder",
+      "Sea Salt",
+      "Extra Virgin Olive Oil",
+      "Lactic Acid"
+    ],
+    "additives": [
+      {
+        "code": "E270",
+        "name": "Lactic Acid",
+        "riskLevel": "low",
+        "origin": "Fermentation",
+        "citation": "EFSA GRAS",
+        "safetySummary": "Natural pH regulator."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "tree_nuts",
+        "name": "Cashews",
+        "detected": true,
+        "icon": "\ud83c\udf30",
+        "confidence": 0.99
+      },
+      {
+        "id": "dairy",
+        "name": "Cheese & Whey",
+        "detected": true,
+        "icon": "\ud83e\udd5b",
+        "confidence": 0.99
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 482,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 5.5,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 980,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 5.0,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "Con Albahaca 100% Italiana",
+        "verdict": "verified",
+        "reality": "38% fresh basil, but uses sunflower oil as primary fat rather than 100% extra virgin olive oil.",
+        "regulatoryStandard": "AESAN Statutory Standard"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Sunflower Oil & Olive Oil Blend",
+        "percentage": 44,
+        "color": "bg-amber-500",
+        "origin": "Plant Seed & Olive Harvest",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Caloric lipid base."
+      },
+      {
+        "id": "i2",
+        "name": "Fresh Italian Genovese Basil",
+        "percentage": 38,
+        "color": "bg-emerald-600",
+        "origin": "Italian Agriculture",
+        "processing": "Raw Whole Food",
+        "metabolicImpact": "Rich in essential aromatic oils and lutein."
+      },
+      {
+        "id": "i3",
+        "name": "Cashews & Grana Padano Cheese",
+        "percentage": 14,
+        "color": "bg-amber-700",
+        "origin": "Dairy & Nut Processing",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Provides creaminess and savory umami."
+      },
+      {
+        "id": "i4",
+        "name": "Sea Salt & Acidity Regulator",
+        "percentage": 4,
+        "color": "bg-sky-600",
+        "origin": "Marine Salt & Fermentation",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Elevated sodium level (980mg)."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-es_barilla_pesto-1",
+        "name": "Pesto Bio 100% Aceite de Oliva",
+        "brand": "Sacla Bio",
+        "nutriScore": "B",
+        "novaScore": 2,
+        "calories": 410,
+        "sugars": 2.0,
+        "vectorMatchPercent": 94,
+        "tag": "-50% Sodium",
+        "image": "\ud83e\uded2"
+      }
+    ]
+  },
+  "se_oatly_barista": {
+    "country": "Sweden",
+    "countryCode": "SE",
+    "productName": "Oat Drink Barista Edition",
+    "brand": "Oatly",
+    "category": "Dairy & Plant Alternatives",
+    "servingSize": "1 cup (240ml)",
+    "calories": 59,
+    "energy": 247,
+    "sugars": 3.4,
+    "saturatedFat": 0.3,
+    "sodium": 40,
+    "protein": 1.0,
+    "fiber": 0.8,
+    "fruitVegetablesPercentage": 0,
+    "nutriScore": "B",
+    "nutriScoreRaw": 2,
+    "novaScore": 3,
+    "novaDescription": "Enzymatically liquefied whole Swedish oats blended with rapeseed oil and dipotassium phosphate.",
+    "imageUrl": "/samples/oats_label.jpg",
+    "analyzedAt": "2026-08-20T00:00:00.000Z",
+    "modelEngine": "OFF Cleaned Dataset + VLM",
+    "ingredients": [
+      "Oat Base (Water, Oats 10%)",
+      "Rapeseed Oil",
+      "Dipotassium Phosphate",
+      "Calcium Carbonate",
+      "Sea Salt",
+      "Vitamins (D2, Riboflavin, B12)"
+    ],
+    "additives": [
+      {
+        "code": "E340",
+        "name": "Dipotassium Phosphate",
+        "riskLevel": "low",
+        "origin": "Mineral Synthesis",
+        "citation": "EFSA Food Additives",
+        "safetySummary": "Acidity regulator buffering coffee acidity."
+      }
+    ],
+    "allergens": [
+      {
+        "id": "gluten",
+        "name": "Oats (Gluten Traces)",
+        "detected": true,
+        "icon": "\ud83c\udf3e",
+        "confidence": 0.9
+      }
+    ],
+    "boundingBoxes": [
+      {
+        "id": "box-header",
+        "label": "Nutrition Facts",
+        "value": "Per 100g",
+        "box_2d": [
+          120,
+          80,
+          780,
+          920
+        ],
+        "category": "header"
+      },
+      {
+        "id": "box-calories",
+        "label": "Calories",
+        "value": 59,
+        "unit": "kcal",
+        "box_2d": [
+          240,
+          100,
+          310,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-fat",
+        "label": "Saturated Fat",
+        "value": 0.3,
+        "unit": "g",
+        "box_2d": [
+          350,
+          100,
+          410,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sodium",
+        "label": "Sodium",
+        "value": 40,
+        "unit": "mg",
+        "box_2d": [
+          480,
+          100,
+          540,
+          900
+        ],
+        "category": "nutrition"
+      },
+      {
+        "id": "box-sugars",
+        "label": "Total Sugars",
+        "value": 3.4,
+        "unit": "g",
+        "box_2d": [
+          580,
+          100,
+          640,
+          900
+        ],
+        "category": "nutrition"
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "claim": "No Added Sugar \u2022 Foamable for Baristas",
+        "verdict": "verified",
+        "reality": "Contains 3.4g natural sugars formed through enzymatic breakdown of oat starch into maltose.",
+        "regulatoryStandard": "Swedish Livsmedelsverket"
+      }
+    ],
+    "deconstructedIngredients": [
+      {
+        "id": "i1",
+        "name": "Swedish Whole Oat Base (Water & Oats)",
+        "percentage": 96,
+        "color": "bg-amber-400",
+        "origin": "Swedish Oat Fields",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Enzymatic maltose breakdown; gentle energy release."
+      },
+      {
+        "id": "i2",
+        "name": "Cold-Pressed Rapeseed Oil",
+        "percentage": 3,
+        "color": "bg-amber-500",
+        "origin": "Nordic Rapeseed Harvest",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Provides micro-foam texture in hot coffee."
+      },
+      {
+        "id": "i3",
+        "name": "Minerals & Fortified Vitamins",
+        "percentage": 1,
+        "color": "bg-emerald-600",
+        "origin": "Calcium & B12 Synthesis",
+        "processing": "Processed Culinary",
+        "metabolicImpact": "Nutritional fortification."
+      }
+    ],
+    "recommendedSwaps": [
+      {
+        "id": "swap-se_oatly_barista-1",
+        "name": "Oatly Organic Oat Drink",
+        "brand": "Oatly",
+        "nutriScore": "A",
+        "novaScore": 2,
+        "calories": 45,
+        "sugars": 2.8,
+        "vectorMatchPercent": 96,
+        "tag": "Oil-Free Organic",
+        "image": "\ud83e\udd5b"
+      }
+    ]
+  }
+}

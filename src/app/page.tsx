@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import Link from "next/link";
-import { HOUSEHOLD_PRODUCTS } from "@/lib/mock-data";
+import { HOUSEHOLD_PRODUCTS, COUNTRY_INTELLIGENCE, CountryIntelligence } from "@/lib/mock-data";
 import { NutriVisionAnalysis } from "@/shared/types/nutrivision";
 import { VisualGroundingCanvas } from "@/features/scanner/VisualGroundingCanvas";
 import { NutriScoreGauge } from "@/features/nutrition/NutriScoreGauge";
@@ -16,7 +15,6 @@ import { ComparisonModal } from "@/features/comparison/ComparisonModal";
 import { 
   Upload, 
   Sun, 
-  ExternalLink, 
   ShoppingCart, 
   Sliders, 
   Shield, 
@@ -28,19 +26,20 @@ import {
   Database, 
   X,
   Scale,
-  Plus,
-  BarChart3,
-  FlaskConical,
-  Compass,
-  CheckCircle2,
-  Trash2
+  TrendingUp,
+  Award,
+  Activity,
+  ChevronDown,
+  ChevronUp,
+  Info
 } from "lucide-react";
 
 export default function NutriVisionWorkbench() {
-  const initialProduct = HOUSEHOLD_PRODUCTS.honeycrisp_apples || Object.values(HOUSEHOLD_PRODUCTS)[0];
+  const initialProduct = HOUSEHOLD_PRODUCTS.us_honeycrisp_apple || Object.values(HOUSEHOLD_PRODUCTS)[0];
   const [analysis, setAnalysis] = useState<NutriVisionAnalysis>(initialProduct);
-  const [activeProductKey, setActiveProductKey] = useState<string>("honeycrisp_apples");
+  const [activeProductKey, setActiveProductKey] = useState<string>("us_honeycrisp_apple");
   const [activeMode, setActiveMode] = useState<"shopper" | "producer" | "deconstruction">("shopper");
+  const [selectedCountry, setSelectedCountry] = useState<string>("ALL");
   const [selectedGradeFilter, setSelectedGradeFilter] = useState<string>("ALL");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -52,6 +51,7 @@ export default function NutriVisionWorkbench() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState<boolean>(false);
   const [comparisonList, setComparisonList] = useState<NutriVisionAnalysis[]>([]);
+  const [showCountryIntelBanner, setShowCountryIntelBanner] = useState<boolean>(true);
   
   // User Dietary Profile State
   const [dietaryProfile, setDietaryProfile] = useState<DietaryProfile>({
@@ -74,27 +74,24 @@ export default function NutriVisionWorkbench() {
     }));
   }, []);
 
-  const categories = ["ALL", "Fresh Produce", "Breakfast & Cereals", "Dairy & Plant Alternatives", "Bars & Healthy Snacks", "Sauces, Spreads & Pantry", "Beverages & Refreshments"];
+  const categories = ["ALL", "Fresh Produce", "Breakfast & Cereals", "Dairy & Plant Alternatives", "Bars & Healthy Snacks", "Sauces, Spreads & Pantry"];
 
-  const presetProducts = [
-    { key: "honeycrisp_apples", name: "Honeycrisp Apple", grade: "A", icon: "🍎" },
-    { key: "quaker_rolled_oats", name: "Rolled Oats", grade: "A", icon: "🥣" },
-    { key: "oatly_barista_edition", name: "Oatly Barista", grade: "B", icon: "🥛" },
-    { key: "barilla_basil_pesto", name: "Barilla Pesto", grade: "C", icon: "🫒" },
-    { key: "kelloggs_froot_loops", name: "Froot Loops", grade: "D", icon: "🥣" },
-    { key: "nutella_hazelnut_spread", name: "Nutella Spread", grade: "E", icon: "🌰" },
-  ];
+  const activeCountryData = useMemo(() => {
+    if (selectedCountry === "ALL") return null;
+    return COUNTRY_INTELLIGENCE.find((c) => c.country === selectedCountry) || null;
+  }, [selectedCountry]);
 
   const filteredProducts = useMemo(() => {
     return productList.filter((item: any) => {
+      const matchesCountry = selectedCountry === "ALL" || (item.country && item.country === selectedCountry);
       const matchesGrade = selectedGradeFilter === "ALL" || item.nutriScore === selectedGradeFilter;
       const matchesCategory = selectedCategory === "ALL" || item.category === selectedCategory;
       const matchesSearch = searchQuery === "" || 
         item.productName.toLowerCase().includes(searchQuery.toLowerCase()) || 
         item.brand.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesGrade && matchesCategory && matchesSearch;
+      return matchesCountry && matchesGrade && matchesCategory && matchesSearch;
     });
-  }, [productList, selectedGradeFilter, selectedCategory, searchQuery]);
+  }, [productList, selectedCountry, selectedGradeFilter, selectedCategory, searchQuery]);
 
   const handleSelectProduct = (key: string) => {
     setActiveProductKey(key);
@@ -201,7 +198,6 @@ export default function NutriVisionWorkbench() {
 
   // Interactive Swap Selection
   const handleSelectSwap = async (swap: any) => {
-    // 1. Match local catalog keys
     const strippedKey = swap.id?.replace(/^swap-/, "").replace(/-\d+$/, "");
     if (strippedKey && HOUSEHOLD_PRODUCTS[strippedKey]) {
       handleSelectProduct(strippedKey);
@@ -222,7 +218,6 @@ export default function NutriVisionWorkbench() {
       return;
     }
 
-    // 2. Query search API
     try {
       setIsSearchingApi(true);
       const res = await fetch(`/api/search?q=${encodeURIComponent(swap.name)}`);
@@ -320,7 +315,7 @@ export default function NutriVisionWorkbench() {
 
       {/* Mac Window Double-Bezel Frame */}
       <div className="w-full max-w-[1440px] bg-[#F8FAFC] rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden relative">
-        {/* Window Title Bar */}
+        {/* Window Title Bar (Cleaned of legacy v1 links) */}
         <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-4 flex-wrap">
           {/* Left: Window Controls & App Title */}
           <div className="flex items-center gap-4">
@@ -333,9 +328,9 @@ export default function NutriVisionWorkbench() {
             <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
 
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-black text-slate-900 tracking-tight">NutriVision</h1>
+              <h1 className="text-lg font-black text-slate-900 tracking-tight">NutriVision AI</h1>
               <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md hidden sm:inline flex items-center gap-1">
-                <Database size={11} /> 406 Catalog + 3.2M OFF API
+                <Database size={11} /> Global OFF & World Bank ML
               </span>
             </div>
           </div>
@@ -379,7 +374,7 @@ export default function NutriVisionWorkbench() {
             </button>
           </div>
 
-          {/* Right: Compare, Profile, Upload, Navigation Links */}
+          {/* Right: Compare, Profile, Upload, Print, Light Mode */}
           <div className="flex items-center gap-2">
             {/* Compare Button */}
             <button
@@ -431,47 +426,16 @@ export default function NutriVisionWorkbench() {
               <Printer size={13} />
             </button>
 
-            {/* Explore DB Link */}
-            <Link
-              href="/explore"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-xl transition-colors hidden xl:flex items-center gap-1"
-            >
-              <Compass size={12} />
-              <span>DB Explore</span>
-            </Link>
-
-            {/* Simulator Link */}
-            <Link
-              href="/simulate"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-xl transition-colors hidden xl:flex items-center gap-1"
-            >
-              <FlaskConical size={12} />
-              <span>Simulator</span>
-            </Link>
-
-            {/* Policy Link */}
-            <Link
-              href="/policy"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-xl transition-colors hidden xl:flex items-center gap-1"
-            >
-              <BarChart3 size={12} />
-              <span>Policy</span>
-            </Link>
-
-            {/* Legacy Scanner Link */}
-            <Link
-              href="/legacy"
-              className="text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-xl transition-colors hidden lg:flex items-center gap-1"
-            >
-              <span>V1</span>
-              <ExternalLink size={11} />
-            </Link>
+            <div className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 rounded-xl text-xs font-semibold text-slate-600 border border-slate-200/60">
+              <Sun size={12} className="text-amber-500" />
+              <span className="hidden sm:inline">Light</span>
+            </div>
           </div>
         </header>
 
-        {/* PROMINENT SEARCH & EXPLORER COMMAND BAR */}
+        {/* COUNTRY MARKET SELECTOR & SEARCH BAR */}
         <div className="px-6 py-4 bg-slate-50 border-b border-slate-200/80 flex flex-col gap-3.5 relative z-30">
-          {/* Main Prominent Search Bar */}
+          {/* Main Search Bar */}
           <div className="flex items-center gap-3 w-full" ref={searchContainerRef}>
             <div className="relative flex-1">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
@@ -485,7 +449,7 @@ export default function NutriVisionWorkbench() {
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Search across 406 verified items or 3,200,000 Open Food Facts global database (e.g., Cheerios, Oatly, Apples, 7622210449283)..."
+                placeholder="Search across country catalog or 3,200,000 Open Food Facts global database (e.g., Cheerios, Oatly, Apples, 7622210449283)..."
                 value={searchQuery}
                 onFocus={() => {
                   if (searchResults.length > 0) setShowSearchDropdown(true);
@@ -594,32 +558,39 @@ export default function NutriVisionWorkbench() {
             </div>
           </div>
 
-          {/* Quick Preset Pills */}
+          {/* COUNTRY MARKETS SELECTOR (Linked to ML Notebook) */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
-              Iconic Presets:
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0 flex items-center gap-1">
+              <Globe size={12} /> Country Market:
             </span>
             <div className="flex items-center gap-1.5">
-              {presetProducts.map((p) => {
-                const isActive = activeProductKey === p.key;
+              <button
+                onClick={() => setSelectedCountry("ALL")}
+                className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+                  selectedCountry === "ALL"
+                    ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                    : "bg-white text-slate-700 border-slate-200/90 hover:bg-slate-100"
+                }`}
+              >
+                🌍 Global / All ({productList.length})
+              </button>
+
+              {COUNTRY_INTELLIGENCE.map((c) => {
+                const isSelected = selectedCountry === c.country;
                 return (
                   <button
-                    key={p.key}
-                    onClick={() => handleSelectProduct(p.key)}
+                    key={c.country}
+                    onClick={() => setSelectedCountry(c.country)}
                     className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 border ${
-                      isActive
+                      isSelected
                         ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                         : "bg-white text-slate-700 border-slate-200/90 hover:bg-slate-100"
                     }`}
                   >
-                    <span>{p.icon}</span>
-                    <span>{p.name}</span>
-                    <span
-                      className={`text-[9px] font-black px-1.5 py-0.2 rounded ${getGradeBadge(
-                        p.grade
-                      )}`}
-                    >
-                      {p.grade}
+                    <span>{c.flag}</span>
+                    <span>{c.country}</span>
+                    <span className="text-[10px] text-emerald-600 font-mono bg-emerald-50 px-1 py-0.2 rounded font-bold">
+                      {c.adoptionScore.toFixed(0)} pts
                     </span>
                   </button>
                 );
@@ -641,16 +612,84 @@ export default function NutriVisionWorkbench() {
                       : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/80"
                   }`}
                 >
-                  {cat === "ALL" ? "All Categories (406)" : cat}
+                  {cat === "ALL" ? "All Categories" : cat}
                 </button>
               ))}
             </div>
 
             <div className="text-xs text-slate-500 font-medium hidden lg:block">
-              Showing <strong>{filteredProducts.length}</strong> catalog products
+              Showing <strong>{filteredProducts.length}</strong> items in <strong>{selectedCountry === "ALL" ? "All Markets" : selectedCountry}</strong>
             </div>
           </div>
         </div>
+
+        {/* COUNTRY INTELLIGENCE BANNER (Derived from ML Notebook & World Bank Integration) */}
+        {activeCountryData && (
+          <div className="px-6 py-3 bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white border-b border-slate-800 transition-all">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{activeCountryData.flag}</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-black tracking-tight">{activeCountryData.country} Food Intelligence</h3>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.2 rounded-full">
+                      {activeCountryData.adoptionCategory}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-0.5 line-clamp-1">{activeCountryData.insights}</p>
+                </div>
+              </div>
+
+              {/* Stat Chips */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="text-right bg-white/5 border border-white/10 px-3 py-1 rounded-xl text-xs">
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">Adoption Suitability</div>
+                  <div className="font-mono font-black text-emerald-400 text-sm">
+                    {activeCountryData.adoptionScore.toFixed(1)} <span className="text-[10px] text-slate-400">/ 100</span>
+                  </div>
+                </div>
+
+                <div className="text-right bg-white/5 border border-white/10 px-3 py-1 rounded-xl text-xs">
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">Adult Obesity</div>
+                  <div className="font-mono font-black text-amber-400 text-sm">
+                    {activeCountryData.obesityPrevalence}%
+                  </div>
+                </div>
+
+                <div className="text-right bg-white/5 border border-white/10 px-3 py-1 rounded-xl text-xs hidden md:block">
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">GDP / Capita</div>
+                  <div className="font-mono font-bold text-slate-200 text-sm">
+                    ${activeCountryData.gdpPerCapita.toLocaleString()}
+                  </div>
+                </div>
+
+                <div className="text-right bg-white/5 border border-white/10 px-3 py-1 rounded-xl text-xs hidden lg:block">
+                  <div className="text-[10px] text-slate-400 font-medium uppercase">Food Quality Index</div>
+                  <div className="font-mono font-bold text-sky-400 text-sm">
+                    {activeCountryData.nutriQualityIndex.toFixed(1)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Nutri-Score Grade Breakdown Mini Bar */}
+            <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between gap-4 text-[11px] text-slate-300">
+              <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider">
+                Nutri-Score Distribution ({activeCountryData.totalProducts.toLocaleString()} products):
+              </span>
+              <div className="flex items-center gap-1.5 flex-1 max-w-md h-2 rounded-full overflow-hidden bg-slate-800">
+                <div style={{ width: `${activeCountryData.gradeDistribution.A}%` }} className="h-full bg-emerald-500" title={`Grade A: ${activeCountryData.gradeDistribution.A}%`} />
+                <div style={{ width: `${activeCountryData.gradeDistribution.B}%` }} className="h-full bg-lime-500" title={`Grade B: ${activeCountryData.gradeDistribution.B}%`} />
+                <div style={{ width: `${activeCountryData.gradeDistribution.C}%` }} className="h-full bg-amber-400" title={`Grade C: ${activeCountryData.gradeDistribution.C}%`} />
+                <div style={{ width: `${activeCountryData.gradeDistribution.D}%` }} className="h-full bg-orange-500" title={`Grade D: ${activeCountryData.gradeDistribution.D}%`} />
+                <div style={{ width: `${activeCountryData.gradeDistribution.E}%` }} className="h-full bg-rose-500" title={`Grade E: ${activeCountryData.gradeDistribution.E}%`} />
+              </div>
+              <span className="font-mono text-slate-400 text-[10px]">
+                A: {activeCountryData.gradeDistribution.A}% • D/E: {(activeCountryData.gradeDistribution.D + activeCountryData.gradeDistribution.E).toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Narrative Banner: Explains current scenario */}
         <div className="px-6 py-2.5 bg-white/80 border-b border-slate-200/60 flex items-center justify-between text-xs text-slate-600">
@@ -676,7 +715,7 @@ export default function NutriVisionWorkbench() {
               </span>
             </div>
           )}
-          <span className="text-[11px] font-mono text-slate-400 hidden md:inline">Open Food Facts Database</span>
+          <span className="text-[11px] font-mono text-slate-400 hidden md:inline">Open Food Facts & World Bank ML Bridge</span>
         </div>
 
         {/* Main Content View (Switches between 3-Column Workbench and Deconstruction View) */}
