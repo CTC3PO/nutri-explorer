@@ -64,6 +64,9 @@ export interface ProductSwap {
 export interface NutriVisionAnalysis {
   productName: string;
   brand: string;
+  category?: string;
+  country?: string;
+  countryCode?: string;
   servingSize?: string;
   calories: number;
   energy: number;
