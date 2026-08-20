@@ -1,6 +1,6 @@
-# NutriVision AI | Edge Multimodal Food Intelligence, Visual Grounding & Recipe Reformulation Workbench
+# NutriVision AI | Multimodal Food Intelligence & Recipe Reformulation Workbench
 
-> **A production-grade food intelligence platform combining edge Vision-Language Model (VLM) visual grounding, a 406-item verified local catalog, a live 3.2M Open Food Facts global API bridge, deterministic allergen/chemical risk audits, and an interactive recipe reformulation sandbox.**
+> An interactive nutrition intelligence tool that uses Vision-Language Models (VLMs) and food science algorithms to inspect packaging, detect deceptive marketing, audit allergen risks, and simulate recipe reformulations in real time.
 
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.0-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -9,62 +9,79 @@
 [![Open Food Facts](https://img.shields.io/badge/Database-3.2M%20Products-orange?style=flat-square)](https://world.openfoodfacts.org/)
 [![Nutri-Score 2024](https://img.shields.io/badge/Algorithm-Santé%20Publique%20France-green?style=flat-square)](https://www.santepubliquefrance.fr/)
 
----
-
-## 1. Why I Built This
-
-Supermarket aisles are filled with deceptive front-of-package marketing:
-* A box of cereal boasts *"Made with Whole Grains!"* and *"Good Source of Vitamin D!"*, yet contains **31% pure added sugar** and synthetic petroleum dyes (Red 40, Yellow 5).
-* A chocolate hazelnut spread claims to be *"A Good Breakfast Choice"*, while **56% of its physical weight is sugar and palm oil**.
-
-For everyday shoppers, reading 6-point font nutrition labels and cross-checking 25 unfamiliar chemical additives is exhausting. For individuals with **Celiac disease, severe nut allergies, diabetes, or hypertension**, ingredient opacity is a serious health hazard. Meanwhile, food brand formulators face tightening regulatory scrutiny—such as the UK and EU **HFSS (High in Fat, Salt, and Sugar) legislation**, which bans low-scoring products from prime supermarket checkout displays and television advertising.
-
-**NutriVision AI** solves this by uniting visual package inspection, deterministic food science algorithms, a 3.2M-product global API, and a live recipe reformulation simulator into a high-performance **Swiss Editorial Light Mode** workbench.
+**Live Demo**: [nutrivision.vercel.app](https://nutrivision.vercel.app)
 
 ---
 
-## 2. Tri-Persona Narrative Modes
+## Why I Built This
 
-NutriVision AI serves three distinct stakeholder personas in one integrated interface:
+Supermarket shelves are full of misleading front-of-package marketing:
+* A breakfast cereal boasts *"Made with Whole Grains!"* and *"Good Source of Vitamin D!"*, while containing **31% pure added sugar** and synthetic petroleum dyes (Red 40, Yellow 5).
+* A chocolate hazelnut spread markets itself as *"A Good Breakfast Choice"*, even though **56% of its physical weight is sugar and palm oil**.
+
+For everyday shoppers, reading 6-point font nutrition labels and cross-checking 25 unfamiliar chemical additives is exhausting. For people managing **Celiac disease, severe nut allergies, diabetes, or hypertension**, ingredient opacity is a serious health hazard. Meanwhile, food brand formulators face tightening regulatory scrutiny—such as the UK and EU **HFSS (High in Fat, Salt, and Sugar) legislation**, which bans low-scoring products from prime supermarket checkout displays and television advertising.
+
+**NutriVision AI** brings together visual package inspection, deterministic food science algorithms (official 2024 Nutri-Score), a 3.2M-product global API, and a live recipe reformulation sandbox into a clean, responsive workbench.
+
+---
+
+## Features
+
+### Key Features
+
+1. **VLM Package Scanning & Visual Grounding**: Upload or scan a package photo to extract macros, ingredients, and normalized 2D bounding boxes `[ymin, xmin, ymax, xmax]` that visually highlight nutrition tables and key callouts directly on the product image.
+2. **Recipe Reformulation Sandbox (Producer Lab)**: Test "What-If" recipe changes with interactive sliders for sugar, saturated fat, sodium, and protein/fiber, watching the Nutri-Score and UK/EU HFSS compliance recalculate in real time.
+3. **Marketing Claims vs. Reality Fact-Checker**: Automatically evaluates front-of-box claims (e.g., *"All Natural"*, *"High Protein"*, *"Heart Healthy"*) against statutory **FDA, FTC, and EFSA** regulatory standards.
+4. **Hybrid 406 Catalog + 3.2M Open Food Facts API**: Instant sub-5ms lookups for 406 curated benchmark foods, with live federated search across 3.2 million global products from Open Food Facts.
+5. **Personalized Dietary & Allergen Safety Filters**: Set strict profiles for Celiac (gluten-free), severe nut allergies, diabetic limits (<8g sugar), low-sodium (<300mg), vegan, and synthetic dyes (Red 40, BHT).
+6. **Side-by-Side Comparison & Swaps**: Pin up to 3 products in a persistent bottom tray to compare macro diffs, or click 1-click healthier swaps within the same food category.
+7. **Printable Clinical Nutrition Dossier**: Export a clean 1-page PDF dossier (`@media print`) with ingredient deconstruction, macro breakdowns, and EFSA citations for clinical consultations.
+
+### Tailored Views (Shoppers, Formulators, Dietitians)
+
+Different users need different depth from nutritional data:
 
 ```mermaid
 flowchart TD
-    subgraph Stakeholders [NutriVision AI Tri-Persona System]
+    subgraph Stakeholders [Stakeholder Views]
         Shopper[🛒 1. Health-Conscious Shopper]
         Formulator[🧪 2. Food Brand Formulator / R&D]
         Dietitian[🔬 3. Clinical Dietitian & Patient]
     end
 
-    subgraph Solutions [Delivered Capabilities]
-        Shopper --> S1[Visual Grounding Bounding Boxes + Deceptive Claim Fact-Checker + 1-Click Healthier Swaps]
-        Formulator --> S2[Reformulation Sandbox: Live Nutri-Score Shift & UK/EU HFSS Advertising Compliance]
-        Dietitian --> S3[X-Ray Deconstruction Proportional Stacks + Zero-Hallucination Allergen Solver + 1-Page PDF Dossier]
+    subgraph Solutions [Tailored Outputs]
+        Shopper --> S1[Visual Bounding Boxes + Deceptive Claim Fact-Checker + 1-Click Healthier Swaps]
+        Formulator --> S2[Reformulation Sandbox: Live Nutri-Score Shift & UK/EU HFSS Compliance]
+        Dietitian --> S3[Ingredient Deconstruction Volume Bars + Allergen Audit + 1-Page PDF Dossier]
     end
 ```
 
-### 🛒 1. Shopper View (B2C)
-* **Visual Grounding Canvas**: Displays real high-resolution product photos with synchronized SVG bounding box callouts (`sugars`, `saturated fat`, `sodium`, `nutrition header`).
-* **Semi-Circular Speedometer Gauge**: Rainbow Nutri-Score arc with animated needle and official NOVA ultra-processed classification bar (1 to 4).
-* **Marketing Claims vs. Reality Fact-Checker**: Evaluates front-of-box claims (e.g. *"All Natural"*, *"High Protein"*, *"Heart Healthy"*) against statutory **FDA, FTC, and EFSA** regulatory standards.
-* **1-Click Healthier Swaps**: Suggests same-category alternative products with lower sugar, fewer additives, higher Nutri-Scores, and similarity percentage match. Clicking any swap card instantly reloads the workbench with that product.
+#### 🛒 1. Shopper View
+* **Visual Package Inspection**: Product photos with reactive SVG bounding boxes that highlight macros (sugars, saturated fat, sodium) on hover.
+* **Nutri-Score & NOVA Gauges**: Rainbow Nutri-Score speedometer arc and official NOVA ultra-processed tier indicator (1 to 4).
+* **Claim Fact-Checking**: Clear verdicts on front-of-box marketing claims against FDA and EFSA regulatory thresholds.
+* **Healthier Swaps**: Same-category alternatives with lower sugar, higher Nutri-Scores, and fewer additives.
 
-### 🔬 2. Inside the Box (X-Ray Deconstruction & Gallery)
-* **Proportional Volume Bars**: Color-coded horizontal stacked bar visualizing the exact physical weight percentage of what makes up the food (e.g., 56% Sugar, 20% Palm Oil, 13% Hazelnuts, 8.7% Milk, 7.4% Cocoa).
-* **Click-to-Zoom Ingredient Deep-Dive Grid**: Detailed cards outlining each ingredient's **Botanical/Chemical Origin**, **Processing Tier** (*Raw Whole Food* vs. *Ultra-Processed Additive*), **Metabolic & Glycemic Impact**, and **Allergen Badges** (🌾 🥜 🌰 🥛 🥚 🌱).
+#### 🧪 2. Producer Lab (Recipe Reformulation)
+* **Interactive Sliders**: Adjust sugar reduction, saturated fat replacement, sodium cuts, and fiber/protein additions.
+* **Live Regulatory Recalculation**: Recomputes the updated 2024 Santé Publique France Nutri-Score algorithm and checks UK/EU HFSS broadcast advertising restrictions.
 
-### 🧪 3. Producer Lab (B2B Recipe Reformulation Sandbox)
-* **Interactive Parameter Sliders**: Real-time "What-If" simulation adjusting Sugar reduction, Saturated Fat substitution, Sodium cuts, and Protein/Fiber boosting.
-* **Instant Regulatory Grade Recalculation**: Recomputes the revised 2024 Nutri-Score formula in real time, projecting the point threshold required to shift grades (e.g., from Grade D to Grade B) and verifying compliance with UK/EU HFSS broadcast advertising standards.
+#### 🔬 3. Inside the Box (Ingredient Deconstruction)
+* **Proportional Volume Bars**: Color-coded horizontal bar visualizing physical weight distribution (e.g. 56% Sugar, 20% Palm Oil, 13% Hazelnuts).
+* **Ingredient Deep Dive**: Origins, processing levels (*Raw Whole Food* vs. *Ultra-Processed Additive*), glycemic impact, and allergen badges (🌾 🥜 🌰 🥛 🥚 🌱).
+* **Deterministic Allergen Solver**: Zero-hallucination rule checking for medical conflicts and synthetic additives (Red 40, BHT, BHA).
 
 ---
 
-## 3. Multimodal System Architecture & Data Flow
+## How It's Built
+
+### Architecture
 
 ```mermaid
 flowchart TD
     UserPhoto[User Uploads Package Photo / Barcode / Query] --> Ingestion{Ingestion Pipeline}
 
-    subgraph Edge_VLM [Multimodal Vision & Extraction Layer]
+    subgraph Edge_VLM [Multimodal Vision & Extraction]
         Ingestion -->|Package Photo| VLM[Gemini 2.0 Flash VLM]
         VLM --> BBoxes[Extract 2D Bounding Boxes: [ymin, xmin, ymax, xmax]]
         VLM --> RawJSON[Extract Macro Key-Values & Ingredients List]
@@ -85,79 +102,24 @@ flowchart TD
     end
 
     subgraph Interactive_Workbench [Client-Side Workbench & Tools]
-        BBoxes & NutriScoreCalc & AllergenSolver --> UI([NutriVision Workbench UI: Swiss Light Mode])
+        BBoxes & NutriScoreCalc & AllergenSolver --> UI([NutriVision Workbench UI])
         UI --> Sandbox[Recipe Reformulation Lab Slider Simulator]
         UI --> CompareTray[Side-by-Side Multi-Product Comparison Tray]
         UI --> PrintDossier[Exportable 1-Page Clinical Nutrition Dossier]
     end
 ```
 
----
+### Engineering & Food Science Highlights
+* **Deterministic Nutri-Score 2024 Solver**: Implements the official Santé Publique France 2024 updated algorithm (with stricter limits for sugar, salt, and red meat) entirely in TypeScript for instant client/edge execution.
+* **Spatial Coordinate Visual Grounding**: Prompts Gemini 2.0 Flash with a structured JSON schema to return normalized `[0, 1000]` bounding boxes, rendered client-side as crisp SVG overlays over high-resolution package images.
+* **Zero-Hallucination Allergen Audit**: Uses deterministic keyword and taxonomy mapping against curated medical conflict databases rather than relying on unstructured LLM text generation for safety-critical allergies.
+* **Hybrid Search Strategy**: Sub-5ms local cache for curated benchmark foods with transparent fallback and live query federation across 3.2M Open Food Facts entries.
 
-## 4. Key Engineering Features
-
-### 1. Visual Grounding with Spatial Coordinate Bounding Boxes
-* Extracts 2D bounding boxes in normalized `[0, 1000]` coordinates for nutrition tables, calories, saturated fat, sodium, and sugars.
-* Renders synchronized reactive SVG overlays that highlight the corresponding region on the product image when users hover or click on nutrition badges.
-
-### 2. Hybrid 406 Local Catalog + 3.2M Open Food Facts Live Bridge
-* **Local Sub-5ms Catalog**: 406 verified items spanning 6 supermarket categories with complete macros, bounding box coordinates, ingredient proportions, and allergen tags.
-* **3.2M Live API Federation**: The `/api/search` and `/api/product/[id]` endpoints query the global Open Food Facts API in parallel, automatically calculating Nutri-Scores, parsing ingredients, and synthesizing deconstruction volume bars on-the-fly for any barcode.
-
-### 3. Personalized Medical & Lifestyle Dietary Filters
-Built-in `DietaryProfileModal.tsx` allows users to toggle medical and lifestyle constraints with real-time conflict badges:
-* **Gluten-Free / Celiac**: Flags wheat, barley, rye, and hidden malt flavorings.
-* **Nut-Free (Peanuts & Tree Nuts)**: Protects allergen-sensitive households and schools.
-* **Diabetic / Low-Glycemic**: Triggers warnings when total sugar exceeds 8g per serving.
-* **Low-Sodium / Heart-Healthy**: Filters products exceeding 300mg sodium per 100g.
-* **Dairy-Free / Vegan**: Detects whey, casein, and milk powders.
-* **Zero Synthetic Dyes & BHT**: Flags artificial colorants (Red 40, Yellow 5, Blue 1) and synthetic antioxidants (BHT, BHA).
-
-### 4. Side-by-Side Multi-Product Comparison Tray
-* Persistent bottom dock allowing users to pin up to 3 products simultaneously.
-* Opens a side-by-side comparison modal displaying macro diffs, sugar reduction deltas, additive counts, and an objective **"Healthier Pick"** verdict.
-
-### 5. Exportable Clinical Nutrition Dossier
-* Dedicated print stylesheet (`@media print`) rendering a clean, 1-page clinical dossier with verified macros, ingredient deconstruction, and scientific EFSA citations for dietitians and patients.
-
----
-
-## 5. Verified Product Spectrum
-
-| Product / Produce | Category | Nutri-Score | NOVA Group | Sugar (g) | Key Narrative Insight |
-| :--- | :--- | :---: | :---: | :---: | :--- |
-| **Honeycrisp Apple** | Fresh Produce | **A** | 1 | 19.0g | 100% Raw Whole Fruit • 4.4g natural cellular pectin fiber |
-| **Organic Romaine** | Fresh Produce | **A** | 1 | 0.5g | 100% Leafy Greens • High Vitamin A & K • 0g fat |
-| **Fresh Hass Avocado** | Fresh Produce | **A** | 1 | 0.2g | 100% Fresh Fruit • 10g monounsaturated oleic plant fat |
-| **Quaker Rolled Oats** | Breakfast & Cereals | **A** | 1 | 1.0g | 100% Whole Grain • 3g cardiovascular soluble beta-glucan |
-| **Chobani Plain Greek** | Dairy & Alternatives | **A** | 1 | 4.0g | Triple-strained nonfat milk • 16g protein • 5 live probiotic strains |
-| **KIND Dark Chocolate** | Bars & Snacks | **B** | 3 | 5.0g | 42% whole almonds • Chicory root fiber • Nut allergen alert |
-| **Barilla Basil Pesto** | Sauces & Pantry | **C** | 3 | 1.5g | 38% Genovese basil • 480mg sodium • Grana Padano & Cashews |
-| **Kellogg's Froot Loops**| Breakfast & Cereals | **D** | 4 | **12.0g** | **31% added sugar** • Synthetic petroleum dyes (Red 40, Yellow 5) |
-| **Nutella Spread** | Sauces & Pantry | **E** | 4 | **21.0g** | **56% pure sugar** • Palm oil carrier • High saturated fat |
-
----
-
-## 6. Performance & Evaluation Benchmarks
-
-| Metric | Target | Measured Result | Status |
-| :--- | :---: | :---: | :---: |
-| **Local Catalog Query Latency** | `< 10ms` | **`< 3.5ms`** | ✅ Passed |
-| **Open Food Facts API Ingestion** | `< 500ms` | **`~240ms`** | ✅ Passed |
-| **Nutri-Score Exact Match** | `100%` | **`100% (50/50 test cases)`** | ✅ Passed |
-| **UI Framerate (60 FPS Animation)** | `60 FPS` | **`60 FPS`** | ✅ Passed |
-| **Zero-Hallucination Allergen Accuracy**| `100%` | **`100% (Deterministic Match)`** | ✅ Passed |
-
----
-
-## 7. Tech Stack & Repository Structure
-
-* **Framework**: Next.js 15 (App Router, Server Components & Route Handlers)
-* **Language**: TypeScript 5.0 (Strict mode, zero `any` types)
-* **Styling**: Tailwind CSS (Swiss Editorial Light Mode design system, porcelain `#EEF2F6` canvas, double-bezel cards)
-* **Vision & AI**: Gemini 2.0 Flash VLM with structured JSON output schema
-* **Data Sources**: 406-item curated catalog (`src/data/catalog-300.json`) + 3.2M Open Food Facts REST API
-* **Icons & Animation**: `lucide-react`, `framer-motion`
+### Tech Stack & Repository Structure
+* **Frontend**: Next.js 15 (App Router), React 19, TypeScript 5, Tailwind CSS 4
+* **Vision & AI**: Google Gemini 2.0 Flash (Multimodal VLM with structured JSON output)
+* **Data Sources**: 406-item curated catalog (`catalog-300.json`) + Open Food Facts REST API (3.2M products)
+* **Visualization & UI**: Framer Motion, Lucide React, SVG coordinate overlays
 
 ```
 _4_nutri-explore/_codebase/
@@ -172,9 +134,8 @@ _4_nutri-explore/_codebase/
 │   │   ├── explore/page.tsx             # Global Database Explorer with infinite scrolling
 │   │   ├── simulate/page.tsx            # Dedicated Recipe Reformulation Simulator
 │   │   ├── policy/page.tsx              # Policy Dashboard with Recharts analytics
-│   │   ├── legacy/page.tsx              # Preserved V1 scanner backup
 │   │   ├── layout.tsx                   # Full-width desktop container & fonts
-│   │   └── globals.css                  # Swiss design system & print dossier styles
+│   │   └── globals.css                  # Design system & print dossier styles
 │   ├── features/
 │   │   ├── scanner/VisualGroundingCanvas.tsx # High-res product photo with SVG coordinate overlays
 │   │   ├── nutrition/NutriScoreGauge.tsx     # Rainbow semi-circular speedometer & NOVA bar
@@ -195,31 +156,50 @@ _4_nutri-explore/_codebase/
 └── README.md
 ```
 
+
 ---
 
-## 8. Getting Started Locally
+## Performance & Evaluation Benchmarks
+
+| Metric | Target | Measured Result | Status |
+| :--- | :---: | :---: | :---: |
+| **Local Catalog Query Latency** | `< 10ms` | **`< 3.5ms`** | ✅ Passed |
+| **Open Food Facts API Ingestion** | `< 500ms` | **`~240ms`** | ✅ Passed |
+| **Nutri-Score Exact Match** | `100%` | **`100% (50/50 test cases)`** | ✅ Passed |
+| **UI Framerate (60 FPS Animation)** | `60 FPS` | **`60 FPS`** | ✅ Passed |
+| **Zero-Hallucination Allergen Accuracy**| `100%` | **`100% (Deterministic Match)`** | ✅ Passed |
+
+---
+
+## Local Development
+
+### Prerequisites
+* **Node.js**: `20.x` or higher
+* **npm** or **pnpm**
+* **Google Gemini API Key** (for VLM scan & OCR visual grounding)
 
 ### 1. Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/CTC3PO/nutri-explorer.git
+git clone https://github.com:CTC3PO/nutri-explorer.git
 cd nutri-explorer
 npm install
 ```
 
-### 2. Configure Environment Variables:
+### 2. Set up environment variables:
 Create `.env.local` in the project root:
 ```bash
+# Required for Gemini 2.0 Flash package scanner
 GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key_here
 ```
 *(Note: If no API key is provided, the workbench operates fully offline using the verified 406-item catalog and pre-computed visual grounding coordinates).*
 
-### 3. Run the Development Server:
+### 3. Start the development server:
 ```bash
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 4. Try These Sample Scenarios:
+### 4. Sample Scenarios to Test:
 * **The Sugar Bomb Trap**: Click `Froot Loops` in presets or search `Froot Loops`. Switch to *Inside the Box* to view the 31% sugar volume stack and synthetic dye alerts.
 * **The Hazelnut Illusion**: Search `Nutella` or barcode `3017620422003`. Open *Marketing vs Reality* to review the 56% sugar reality against the front claim.
 * **Recipe Reformulation**: Click *Producer Lab* on Nutella or Froot Loops. Drag the sugar slider down 40% to watch the Nutri-Score speedometer swing from **Grade D** to **Grade B**.
@@ -228,6 +208,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 9. License
+## License
 
-MIT License © 2026 CTC3PO. Built for portfolio presentation and food intelligence engineering.
+MIT License © 2026 CTC3PO
