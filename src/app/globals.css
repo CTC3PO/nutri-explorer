@@ -46,3 +46,35 @@
     @apply font-sans font-black tracking-tight uppercase italic;
   }
 }
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  header, 
+  nav, 
+  button, 
+  input, 
+  .no-print,
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .shadow-2xl, 
+  .shadow-lg, 
+  .shadow-md {
+    box-shadow: none !important;
+  }
+
+  .border {
+    border-color: #cbd5e1 !important;
+  }
+}

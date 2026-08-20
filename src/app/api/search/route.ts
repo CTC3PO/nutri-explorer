@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { HOUSEHOLD_PRODUCTS } from "@/lib/mock-data";
 
 interface ProductItem {
   id: string;
@@ -13,164 +14,64 @@ interface ProductItem {
   image_url?: string;
 }
 
-// Curated database of famous products for high availability & instant response
-const CURATED_PRODUCTS: ProductItem[] = [
-  {
-    id: "7622210449283",
-    name: "Oreo Original Sandwich Biscuits",
-    brand: "Mondelez / Nabisco",
-    category: "Biscuits & Snacks",
-    nutri_score: "E",
-    energy: 474,
-    sugars: 38,
-    saturated_fat: 7.6,
-    sodium: 400,
-    image_url: "https://images.openfoodfacts.org/images/products/762/221/044/9283/front_fr.4.200.jpg",
-  },
-  {
-    id: "7622210449284",
-    name: "Oreo Double Stuf",
-    brand: "Nabisco",
-    category: "Biscuits & Snacks",
-    nutri_score: "E",
-    energy: 500,
-    sugars: 42,
-    saturated_fat: 9.0,
-    sodium: 420,
-    image_url: "https://images.openfoodfacts.org/images/products/004/400/003/2425/front_en.12.200.jpg",
-  },
-  {
-    id: "3017620422003",
-    name: "Nutella Hazelnut Spread",
-    brand: "Ferrero",
-    category: "Spreads",
-    nutri_score: "E",
-    energy: 539,
-    sugars: 56.3,
-    saturated_fat: 10.6,
-    sodium: 42,
-    image_url: "https://images.openfoodfacts.org/images/products/301/762/042/2003/front_fr.327.200.jpg",
-  },
-  {
-    id: "7613035123456",
-    name: "KitKat Milk Chocolate Bar",
-    brand: "Nestlé",
-    category: "Chocolates",
-    nutri_score: "E",
-    energy: 518,
-    sugars: 49.6,
-    saturated_fat: 18.4,
-    sodium: 90,
-    image_url: "https://images.openfoodfacts.org/images/products/500/015/946/1122/front_en.39.200.jpg",
-  },
-  {
-    id: "5449000000996",
-    name: "Coca-Cola Original Taste",
-    brand: "The Coca-Cola Company",
-    category: "Beverages",
-    nutri_score: "E",
-    energy: 42,
-    sugars: 10.6,
-    saturated_fat: 0,
-    sodium: 10,
-    image_url: "https://images.openfoodfacts.org/images/products/544/900/000/0996/front_en.618.200.jpg",
-  },
-  {
-    id: "7350059530018",
-    name: "Oat Milk Unsweetened (Barista Edition)",
-    brand: "Oatly",
-    category: "Plant-based Beverages",
-    nutri_score: "B",
-    energy: 59,
-    sugars: 3.4,
-    saturated_fat: 0.3,
-    sodium: 40,
-    image_url: "https://images.openfoodfacts.org/images/products/735/005/953/0018/front_en.43.200.jpg",
-  },
-  {
-    id: "0016000275263",
-    name: "Honey Nut Cheerios",
-    brand: "General Mills",
-    category: "Breakfast Cereals",
-    nutri_score: "C",
-    energy: 378,
-    sugars: 30.5,
-    saturated_fat: 0.8,
-    sodium: 540,
-    image_url: "https://images.openfoodfacts.org/images/products/001/600/027/5263/front_en.24.200.jpg",
-  },
-  {
-    id: "5000159461122",
-    name: "Snickers Chocolate Bar",
-    brand: "Mars",
-    category: "Snacks",
-    nutri_score: "E",
-    energy: 483,
-    sugars: 50.5,
-    saturated_fat: 9.3,
-    sodium: 220,
-    image_url: "https://images.openfoodfacts.org/images/products/500/015/946/1122/front_en.39.200.jpg",
-  },
-  {
-    id: "3228857000166",
-    name: "Organic Greek Yogurt 0% Fat",
-    brand: "Chobani",
-    category: "Dairy & Yogurt",
-    nutri_score: "A",
-    energy: 57,
-    sugars: 3.6,
-    saturated_fat: 0.1,
-    sodium: 35,
-    image_url: "https://images.openfoodfacts.org/images/products/085/609/700/0088/front_en.11.200.jpg",
-  },
-  {
-    id: "0000000000001",
-    name: "Fresh Organic Broccoli",
-    brand: "Nature Fresh",
-    category: "Vegetables",
-    nutri_score: "A",
-    energy: 34,
-    sugars: 1.7,
-    saturated_fat: 0.1,
-    sodium: 33,
-    image_url: "https://images.openfoodfacts.org/images/products/327/019/002/0970/front_fr.6.200.jpg",
-  },
-];
+// Convert all 406 items into searchable items
+const LOCAL_CATALOG: ProductItem[] = Object.entries(HOUSEHOLD_PRODUCTS).map(([key, item]: [string, any]) => ({
+  id: key,
+  name: item.productName,
+  brand: item.brand,
+  category: item.category || "Food & Produce",
+  nutri_score: item.nutriScore,
+  energy: item.calories,
+  sugars: item.sugars,
+  saturated_fat: item.saturatedFat,
+  sodium: item.sodium,
+  image_url: item.imageUrl,
+}));
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const query = (searchParams.get("q") || "").trim().toLowerCase();
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const category = (searchParams.get("category") || "").trim();
 
+  // If query is empty, return top items from local catalog
   if (!query) {
-    return NextResponse.json({ products: CURATED_PRODUCTS.slice(0, 10), hasMore: false });
+    let list = LOCAL_CATALOG;
+    if (category && category !== "ALL") {
+      list = list.filter((p) => p.category === category);
+    }
+    return NextResponse.json({ products: list.slice(0, 30), total: list.length, hasMore: false });
   }
 
-  // 1. Check matching items in curated list
-  const curatedMatches = CURATED_PRODUCTS.filter(
-    (p) =>
-      p.name.toLowerCase().includes(query) ||
-      (p.brand && p.brand.toLowerCase().includes(query)) ||
-      (p.category && p.category.toLowerCase().includes(query))
-  );
+  // 1. Search local 406 catalog with priority matching (name -> brand -> ingredients -> category)
+  const localMatches = LOCAL_CATALOG.filter((p) => {
+    const nameMatch = p.name.toLowerCase().includes(query);
+    const brandMatch = p.brand ? p.brand.toLowerCase().includes(query) : false;
+    const catMatch = p.category ? p.category.toLowerCase().includes(query) : false;
+    const categoryFilterMatch = !category || category === "ALL" || p.category === category;
 
+    return (nameMatch || brandMatch || catMatch) && categoryFilterMatch;
+  });
+
+  // 2. Query Open Food Facts 3.2M Live API in parallel for broader global results
+  let apiProducts: ProductItem[] = [];
   try {
     const offUrl = `https://world.openfoodfacts.org/api/v2/search?search_terms=${encodeURIComponent(
       query
-    )}&page=${page}&page_size=20&fields=code,product_name,product_name_en,brands,categories,nutriscore_grade,image_front_small_url,image_url,nutriments`;
+    )}&page=${page}&page_size=30&fields=code,product_name,product_name_en,brands,categories,nutriscore_grade,image_front_small_url,image_url,nutriments`;
 
     const res = await fetch(offUrl, {
       headers: {
-        "User-Agent": "NutriGlobalExplorerApp/1.0 (chau@chautran.dev)",
+        "User-Agent": "NutriVisionWorkbench/1.0 (contact@nutrivision.dev)",
       },
-      next: { revalidate: 3600 },
+      next: { revalidate: 1800 },
     });
 
     if (res.ok) {
       const data = await res.json();
       const rawProducts = data.products || [];
 
-      const apiProducts: ProductItem[] = rawProducts
+      apiProducts = rawProducts
         .filter((p: any) => p.product_name || p.product_name_en)
         .map((p: any) => {
           const nutriments = p.nutriments || {};
@@ -185,9 +86,9 @@ export async function GET(req: NextRequest) {
 
           return {
             id: p.code,
-            name: p.product_name || p.product_name_en || "Unknown Product",
-            brand: p.brands ? p.brands.split(",")[0].trim() : undefined,
-            category: p.categories ? p.categories.split(",")[0].trim() : undefined,
+            name: p.product_name || p.product_name_en || "Food Product",
+            brand: p.brands ? p.brands.split(",")[0].trim() : "Open Food Facts",
+            category: p.categories ? p.categories.split(",")[0].trim() : "Packaged Food",
             nutri_score: validGrade,
             energy: energyKcal,
             sugars: Math.round((nutriments["sugars_100g"] ?? 0) * 10) / 10,
@@ -198,27 +99,23 @@ export async function GET(req: NextRequest) {
             image_url: p.image_front_small_url || p.image_url || undefined,
           };
         });
-
-      // Merge curated matches at top, then API results, removing duplicates by id
-      const combinedMap = new Map<string, ProductItem>();
-      curatedMatches.forEach((p) => combinedMap.set(p.id, p));
-      apiProducts.forEach((p) => {
-        if (!combinedMap.has(p.id)) combinedMap.set(p.id, p);
-      });
-
-      const finalProducts = Array.from(combinedMap.values());
-      return NextResponse.json({
-        products: finalProducts,
-        hasMore: finalProducts.length >= 20,
-      });
     }
   } catch (error) {
-    console.warn("OpenFoodFacts search offline, returning curated matches:", error);
+    console.warn("OpenFoodFacts search offline, returning local matches:", error);
   }
 
-  // Fallback to curated matches if OpenFoodFacts endpoint is down/timing out
+  // 3. Combine local catalog matches (top priority) + Open Food Facts API matches, removing duplicates
+  const combinedMap = new Map<string, ProductItem>();
+  localMatches.forEach((p) => combinedMap.set(p.id, p));
+  apiProducts.forEach((p) => {
+    if (!combinedMap.has(p.id)) combinedMap.set(p.id, p);
+  });
+
+  const finalProducts = Array.from(combinedMap.values());
+
   return NextResponse.json({
-    products: curatedMatches.length > 0 ? curatedMatches : CURATED_PRODUCTS.slice(0, 6),
-    hasMore: false,
+    products: finalProducts.slice(0, 50),
+    total: finalProducts.length,
+    hasMore: finalProducts.length > 50,
   });
 }
