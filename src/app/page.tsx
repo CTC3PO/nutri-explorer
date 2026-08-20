@@ -326,10 +326,10 @@ export default function NutriVisionWorkbench() {
       <div className="w-full max-w-[1440px] bg-[#F8FAFC] rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden relative">
         
         {/* ========================================================================= */}
-        {/* 1. TOP APP BAR (Decluttered & Clean)                                     */}
+        {/* 1. TOP APP BAR                                                            */}
         {/* ========================================================================= */}
         <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-4 flex-wrap">
-          {/* Left: Window Dots & App Brand */}
+          {/* Left: Window Controls & App Brand */}
           <div className="flex items-center gap-3.5">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
@@ -341,15 +341,15 @@ export default function NutriVisionWorkbench() {
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-black text-slate-900 tracking-tight">NutriVision AI</h1>
+                <h1 className="text-base font-black text-slate-900 tracking-tight">NutriVision</h1>
                 <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md hidden sm:inline">
-                  Food Intelligence
+                  Food Nutrition Explorer
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Center Search Bar (Instant Search across Catalog & 3.2M OFF) */}
+          {/* Center Search Bar */}
           <div className="flex-1 max-w-lg relative" ref={searchContainerRef}>
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
@@ -362,7 +362,7 @@ export default function NutriVisionWorkbench() {
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Search food, brand, or barcode (e.g. Nutella, Oatly, 7622210449283)..."
+                placeholder="Search food, brand, or barcode (e.g. Nutella, Oatly, Cheerios)..."
                 value={searchQuery}
                 onFocus={() => {
                   if (searchResults.length > 0) setShowSearchDropdown(true);
@@ -387,8 +387,8 @@ export default function NutriVisionWorkbench() {
             {showSearchDropdown && searchResults.length > 0 && (
               <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden py-1 z-50 animate-in fade-in duration-150 max-h-[360px] flex flex-col">
                 <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                  <span className="font-bold text-slate-700">Results ({searchResults.length})</span>
-                  <span className="text-[10px] text-slate-400">Click to load</span>
+                  <span className="font-bold text-slate-700">Matching Products ({searchResults.length})</span>
+                  <span className="text-[10px] text-slate-400">Click to view</span>
                 </div>
                 <div className="overflow-y-auto divide-y divide-slate-100 flex-1">
                   {searchResults.map((item) => (
@@ -426,7 +426,7 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <Scale size={13} />
-              <span>{isCurrentInComparison ? "Pinned" : "+ Compare"}</span>
+              <span>{isCurrentInComparison ? "In Compare" : "+ Compare"}</span>
               {comparisonList.length > 0 && (
                 <span className="ml-0.5 px-1 py-0.2 rounded bg-black/15 text-[10px] font-mono">
                   {comparisonList.length}
@@ -477,7 +477,7 @@ export default function NutriVisionWorkbench() {
           {/* Active Product Summary Pill */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-2xl border border-slate-200 shadow-xs">
-              <span className="text-xs text-slate-400 font-medium">Currently Inspecting:</span>
+              <span className="text-xs text-slate-400 font-medium">Inspecting:</span>
               <span className="text-xs font-black text-slate-900">{analysis.productName}</span>
               <span className="text-[11px] text-slate-500 font-medium">({analysis.brand})</span>
               <span className={`w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shadow-xs ${getGradeBadge(analysis.nutriScore)}`}>
@@ -492,7 +492,7 @@ export default function NutriVisionWorkbench() {
           {/* Quick 1-Click Iconic Presets Ribbon */}
           <div className="flex items-center gap-1.5 overflow-x-auto text-xs py-0.5">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
-              Popular Presets:
+              Quick Presets:
             </span>
             {iconicPresets.map((item) => {
               const isSelected = activeProductKey === item.key || analysis.productName.includes(item.name);
@@ -518,11 +518,11 @@ export default function NutriVisionWorkbench() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. DISTINCT FEATURE TABS (Clean Swiss Structure like _6_zoning)           */}
+        {/* 3. DISTINCT TABS (Clean, Non-AI Domain Terms)                             */}
         {/* ========================================================================= */}
         <nav className="px-6 bg-white border-b border-slate-200 flex items-center justify-between gap-4 overflow-x-auto">
           <div className="flex items-center gap-1">
-            {/* Tab 1: Inside the Box (MAIN FEATURE) */}
+            {/* Tab 1: Inside the Box (MAIN FOOD EXPLORATION FEATURE) */}
             <button
               onClick={() => setActiveTab("deconstruction")}
               className={`py-3.5 px-4 text-xs font-black transition-all flex items-center gap-2 border-b-2 relative ${
@@ -532,13 +532,13 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <Layers size={15} className={activeTab === "deconstruction" ? "text-indigo-600" : "text-slate-400"} />
-              <span>🔬 Inside the Box (X-Ray)</span>
+              <span>🔬 Inside the Box (Ingredients)</span>
               <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded-full bg-indigo-100 text-indigo-800">
-                Main
+                Primary
               </span>
             </button>
 
-            {/* Tab 2: Shopper Scanner */}
+            {/* Tab 2: Nutrition Facts & Claims */}
             <button
               onClick={() => setActiveTab("shopper")}
               className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
@@ -548,10 +548,10 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <Scan size={15} className={activeTab === "shopper" ? "text-emerald-600" : "text-slate-400"} />
-              <span>🏷️ Shopper Scanner & Claims</span>
+              <span>🏷️ Nutrition Facts & Claims</span>
             </button>
 
-            {/* Tab 3: Reformulation Lab */}
+            {/* Tab 3: Recipe Reformulation */}
             <button
               onClick={() => setActiveTab("producer")}
               className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
@@ -561,10 +561,10 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <FlaskConical size={15} className={activeTab === "producer" ? "text-purple-600" : "text-slate-400"} />
-              <span>🧪 Reformulation Lab</span>
+              <span>🧪 Recipe Reformulation</span>
             </button>
 
-            {/* Tab 4: Global Country Markets */}
+            {/* Tab 4: Global Policy & Country Adoption */}
             <button
               onClick={() => setActiveTab("country_markets")}
               className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
@@ -574,7 +574,7 @@ export default function NutriVisionWorkbench() {
               }`}
             >
               <Globe2 size={15} className={activeTab === "country_markets" ? "text-blue-600" : "text-slate-400"} />
-              <span>🌍 Country Markets (ML)</span>
+              <span>🌍 Country Nutrition Data</span>
             </button>
 
             {/* Tab 5: Side-by-Side Comparison */}
@@ -603,7 +603,7 @@ export default function NutriVisionWorkbench() {
         {/* ========================================================================= */}
         <main className="p-6 flex-1 min-h-[580px]">
 
-          {/* TAB 1: INSIDE THE BOX (MAIN FEATURE) */}
+          {/* TAB 1: INSIDE THE BOX (PRIMARY FOOD EXPLORATION) */}
           {activeTab === "deconstruction" && (
             <div className="animate-in fade-in duration-200">
               <ProductDeconstructionView
@@ -613,10 +613,10 @@ export default function NutriVisionWorkbench() {
             </div>
           )}
 
-          {/* TAB 2: SHOPPER SCANNER & CLAIMS */}
+          {/* TAB 2: NUTRITION FACTS & CLAIMS */}
           {activeTab === "shopper" && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch animate-in fade-in duration-200">
-              {/* Col 1: Visual Grounding Image */}
+              {/* Col 1: Verified Package Image */}
               <div>
                 <VisualGroundingCanvas
                   productName={analysis.productName}
@@ -644,7 +644,7 @@ export default function NutriVisionWorkbench() {
                 />
               </div>
 
-              {/* Col 3: Claims Fact-Check & Healthier Swaps */}
+              {/* Col 3: Claims Verification & Healthier Swaps */}
               <div className="flex flex-col gap-6 justify-between">
                 {analysis.claims && analysis.claims.length > 0 ? (
                   <MarketingVsReality
@@ -667,7 +667,7 @@ export default function NutriVisionWorkbench() {
             </div>
           )}
 
-          {/* TAB 3: REFORMULATION LAB */}
+          {/* TAB 3: RECIPE REFORMULATION */}
           {activeTab === "producer" && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch animate-in fade-in duration-200">
               <div className="lg:col-span-2">
@@ -720,7 +720,7 @@ export default function NutriVisionWorkbench() {
             </div>
           )}
 
-          {/* TAB 4: GLOBAL COUNTRY MARKETS (ML Notebook Findings) */}
+          {/* TAB 4: COUNTRY NUTRITION DATA */}
           {activeTab === "country_markets" && (
             <div className="flex flex-col gap-6 animate-in fade-in duration-200">
               {/* Country Selector Strip */}
@@ -754,7 +754,7 @@ export default function NutriVisionWorkbench() {
                     <span className="text-3xl">{activeCountryData.flag}</span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-lg font-black">{activeCountryData.country} Food Intelligence</h2>
+                        <h2 className="text-lg font-black">{activeCountryData.country} Nutrition Profile</h2>
                         <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                           {activeCountryData.adoptionCategory}
                         </span>
@@ -783,7 +783,7 @@ export default function NutriVisionWorkbench() {
                       </span>
                     </div>
                     <div className="bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl text-right">
-                      <span className="text-[10px] text-slate-400 block">Food Quality</span>
+                      <span className="text-[10px] text-slate-400 block">Food Quality Index</span>
                       <span className="font-mono font-bold text-sky-400 text-base">
                         {activeCountryData.nutriQualityIndex.toFixed(1)}
                       </span>
@@ -816,7 +816,7 @@ export default function NutriVisionWorkbench() {
                     <h3 className="font-bold text-base text-slate-900">
                       Representative Products from {activeCountryData.country}
                     </h3>
-                    <p className="text-xs text-slate-500">Curated authentic staples extracted from Open Food Facts</p>
+                    <p className="text-xs text-slate-500">Staples from Open Food Facts</p>
                   </div>
 
                   <div className="flex items-center gap-1 text-xs">
@@ -887,7 +887,7 @@ export default function NutriVisionWorkbench() {
                     onClick={() => setIsComparisonOpen(true)}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs transition-all"
                   >
-                    Open Fullscreen Modal
+                    Open Comparison View
                   </button>
                 </div>
 

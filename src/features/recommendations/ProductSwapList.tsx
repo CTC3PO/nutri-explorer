@@ -57,7 +57,7 @@ export function ProductSwapList({ swaps, onSelectSwap }: ProductSwapListProps) {
                 <span className="font-bold text-emerald-700">{swap.sugars}g</span>
               </div>
               <div className="mt-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[9px] font-bold py-0.5 rounded text-center transition-colors">
-                {swap.vectorMatchPercent}% Match • Click to Inspect
+                {swap.vectorMatchPercent}% Match • Inspect Alternative
               </div>
             </div>
           </div>
