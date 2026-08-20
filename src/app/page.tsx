@@ -13,50 +13,55 @@ import { ProductDeconstructionView } from "@/features/deconstruction/ProductDeco
 import { DietaryProfileModal, DietaryProfile } from "@/features/profile/DietaryProfileModal";
 import { ComparisonModal } from "@/features/comparison/ComparisonModal";
 import { 
-  Layers, 
-  Scan, 
-  FlaskConical, 
-  Scale, 
+  Compass, 
+  ScanLine, 
   Search, 
+  Scale, 
   Upload, 
-  Printer, 
   Shield, 
-  Sun, 
   X, 
   Loader2, 
-  ChevronRight,
-  TrendingUp,
+  FlaskConical,
+  Layers,
   Sparkles,
   CheckCircle2,
-  AlertTriangle,
+  ArrowRight,
+  Filter,
+  Camera,
+  Flame,
+  Droplet,
   Info
 } from "lucide-react";
 
-type MainTab = "deconstruction" | "shopper" | "producer" | "comparison";
+type PwaTab = "explore" | "scan" | "search";
 
 export default function NutriVisionWorkbench() {
-  // 1. Core Product & Tab State (Default: 'deconstruction' / Inside the Box)
+  // 1. Core State
   const initialProduct = HOUSEHOLD_PRODUCTS.us_nutella || HOUSEHOLD_PRODUCTS.us_honeycrisp_apple || Object.values(HOUSEHOLD_PRODUCTS)[0];
   const [analysis, setAnalysis] = useState<NutriVisionAnalysis>(initialProduct);
   const [activeProductKey, setActiveProductKey] = useState<string>("us_nutella");
-  const [activeTab, setActiveTab] = useState<MainTab>("deconstruction");
+  const [activeTab, setActiveTab] = useState<PwaTab>("explore");
 
-  // Search & Global State
+  // Search State
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearchingApi, setIsSearchingApi] = useState<boolean>(false);
-  const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
+  const [searchGradeFilter, setSearchGradeFilter] = useState<string>("ALL");
+  const [searchCategoryFilter, setSearchCategoryFilter] = useState<string>("ALL");
+
+  // UI & Modals State
   const [selectedBoxId, setSelectedBoxId] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isComparisonOpen, setIsComparisonOpen] = useState<boolean>(false);
+  const [showReformulationInExplore, setShowReformulationInExplore] = useState<boolean>(false);
   const [comparisonList, setComparisonList] = useState<NutriVisionAnalysis[]>([
     HOUSEHOLD_PRODUCTS.us_honeycrisp_apple,
     HOUSEHOLD_PRODUCTS.us_froot_loops,
     HOUSEHOLD_PRODUCTS.us_nutella,
   ].filter(Boolean));
 
-  // User Dietary Profile State
+  // Dietary Profile State
   const [dietaryProfile, setDietaryProfile] = useState<DietaryProfile>({
     glutenFree: false,
     nutFree: false,
@@ -68,21 +73,19 @@ export default function NutriVisionWorkbench() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const iconicPresets = [
-    { key: "us_nutella", name: "Nutella Spread", grade: "E", icon: "🌰", tag: "56% Sugar" },
+    { key: "us_nutella", name: "Nutella", grade: "E", icon: "🌰", tag: "56% Sugar" },
     { key: "us_froot_loops", name: "Froot Loops", grade: "D", icon: "🥣", tag: "Ultra-Processed" },
     { key: "es_barilla_pesto", name: "Barilla Pesto", grade: "C", icon: "🫒", tag: "High Sodium" },
     { key: "se_oatly_barista", name: "Oatly Barista", grade: "B", icon: "🥛", tag: "Plant-Based" },
     { key: "us_quaker_oats", name: "Rolled Oats", grade: "A", icon: "🥣", tag: "Beta-Glucan" },
-    { key: "us_honeycrisp_apple", name: "Honeycrisp Apple", grade: "A", icon: "🍎", tag: "100% Whole Food" },
+    { key: "us_honeycrisp_apple", name: "Honeycrisp", grade: "A", icon: "🍎", tag: "Whole Food" },
   ];
 
   const handleSelectProduct = (key: string) => {
     setActiveProductKey(key);
     setSelectedBoxId(null);
-    setShowSearchDropdown(false);
     if (HOUSEHOLD_PRODUCTS[key]) {
       setAnalysis(HOUSEHOLD_PRODUCTS[key]);
     }
@@ -110,69 +113,75 @@ export default function NutriVisionWorkbench() {
     (p) => p.productName === analysis.productName && p.brand === analysis.brand
   );
 
-  // Close search dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setShowSearchDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Global Keyboard Shortcut (CMD+K or / to focus search)
+  // Global Keyboard Shortcut (CMD+K or / to open Search tab)
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-      if (e.key === "Escape") {
-        setShowSearchDropdown(false);
+        setActiveTab("search");
+        setTimeout(() => searchInputRef.current?.focus(), 50);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Unified Search API & Local Lookup
+  // Live Multi-Strategy Search Execution
   useEffect(() => {
-    if (!searchQuery || searchQuery.trim().length === 0) {
-      setSearchResults([]);
+    const q = searchQuery.trim();
+    if (!q) {
+      // Default populate with local staples
+      const list = Object.entries(HOUSEHOLD_PRODUCTS).map(([key, item]: [string, any]) => ({
+        id: key,
+        name: item.productName,
+        brand: item.brand,
+        category: item.category || "Food",
+        nutri_score: item.nutriScore,
+        energy: item.calories,
+        sugars: item.sugars,
+        saturated_fat: item.saturatedFat,
+        sodium: item.sodium,
+        image_url: item.imageUrl,
+      }));
+      setSearchResults(list);
       return;
     }
 
     const timer = setTimeout(async () => {
       setIsSearchingApi(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
         if (res.ok) {
           const data = await res.json();
           setSearchResults(data.products || []);
-          setShowSearchDropdown(true);
         }
       } catch (err) {
         console.error("Search failed:", err);
       } finally {
         setIsSearchingApi(false);
       }
-    }, 200);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Load product by ID/Barcode
-  const handleSelectApiProduct = async (product: any) => {
+  // Load product into active view and switch to Explore
+  const handleSelectSearchedProduct = async (product: any) => {
     setIsSearchingApi(true);
-    setShowSearchDropdown(false);
     try {
+      if (HOUSEHOLD_PRODUCTS[product.id]) {
+        handleSelectProduct(product.id);
+        setActiveTab("explore");
+        return;
+      }
+
       const res = await fetch(`/api/product/${product.id}`);
       if (res.ok) {
         const data: NutriVisionAnalysis = await res.json();
         setAnalysis(data);
         setActiveProductKey(product.id);
         setSelectedBoxId(null);
+        setActiveTab("explore");
       }
     } catch (err) {
       console.error("Failed to load product details:", err);
@@ -186,6 +195,7 @@ export default function NutriVisionWorkbench() {
     const strippedKey = swap.id?.replace(/^swap-/, "").replace(/-\d+$/, "");
     if (strippedKey && HOUSEHOLD_PRODUCTS[strippedKey]) {
       handleSelectProduct(strippedKey);
+      setActiveTab("explore");
       return;
     }
 
@@ -200,6 +210,7 @@ export default function NutriVisionWorkbench() {
 
     if (localMatch) {
       handleSelectProduct(localMatch);
+      setActiveTab("explore");
       return;
     }
 
@@ -209,7 +220,7 @@ export default function NutriVisionWorkbench() {
       if (res.ok) {
         const data = await res.json();
         if (data.products && data.products.length > 0) {
-          await handleSelectApiProduct(data.products[0]);
+          await handleSelectSearchedProduct(data.products[0]);
         }
       }
     } catch (e) {
@@ -224,6 +235,7 @@ export default function NutriVisionWorkbench() {
     if (!file) return;
 
     setIsScanning(true);
+    setActiveTab("scan");
     try {
       const formData = new FormData();
       formData.append("image", file);
@@ -240,7 +252,6 @@ export default function NutriVisionWorkbench() {
       setSelectedBoxId(null);
     } catch (err) {
       console.error(err);
-      setAnalysis(initialProduct);
     } finally {
       setIsScanning(false);
     }
@@ -269,8 +280,16 @@ export default function NutriVisionWorkbench() {
     }
   };
 
+  const filteredSearchResults = useMemo(() => {
+    return searchResults.filter((p) => {
+      const matchGrade = searchGradeFilter === "ALL" || p.nutri_score === searchGradeFilter;
+      const matchCat = searchCategoryFilter === "ALL" || (p.category && p.category.toLowerCase().includes(searchCategoryFilter.toLowerCase()));
+      return matchGrade && matchCat;
+    });
+  }, [searchResults, searchGradeFilter, searchCategoryFilter]);
+
   return (
-    <div className="min-h-screen bg-[#EEF2F6] p-3 sm:p-6 lg:p-8 flex items-center justify-center font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F0F3F7] p-2 sm:p-5 lg:p-7 flex items-center justify-center font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
       {/* Hidden File Input */}
       <input
         type="file"
@@ -295,116 +314,50 @@ export default function NutriVisionWorkbench() {
         onClose={() => setIsComparisonOpen(false)}
         products={comparisonList}
         onRemoveProduct={handleRemoveFromCompare}
-        onSelectActive={(p) => setAnalysis(p)}
+        onSelectActive={(p) => {
+          setAnalysis(p);
+          setActiveTab("explore");
+        }}
       />
 
-      {/* Main Mac-Style Window Frame */}
-      <div className="w-full max-w-[1440px] bg-[#F8FAFC] rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden relative">
+      {/* Main PWA Window Frame */}
+      <div className="w-full max-w-[1440px] bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden relative">
         
         {/* ========================================================================= */}
-        {/* 1. TOP APP BAR                                                            */}
+        {/* 1. TOP PWA APP HEADER                                                     */}
         {/* ========================================================================= */}
-        <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-4 flex-wrap">
-          {/* Left: Window Controls & App Brand */}
+        <header className="px-6 py-4 bg-white border-b border-slate-200/80 flex items-center justify-between gap-4 flex-wrap">
+          {/* Brand & App Identity */}
           <div className="flex items-center gap-3.5">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-              <span className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-              <span className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 font-black text-xl">
+              🥗
             </div>
-
-            <div className="h-5 w-px bg-slate-200 hidden sm:block" />
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-black text-slate-900 tracking-tight">NutriVision</h1>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md hidden sm:inline">
-                  Food Nutrition Explorer
+                <h1 className="text-lg font-black text-slate-900 tracking-tight">NutriVision</h1>
+                <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">
+                  PWA Food Explorer
                 </span>
               </div>
+              <p className="text-[11px] text-slate-400 font-medium">Inside the Box • Real Images • 3.2M Food Database</p>
             </div>
           </div>
 
-          {/* Center Search Bar */}
-          <div className="flex-1 max-w-lg relative" ref={searchContainerRef}>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-                {isSearchingApi ? (
-                  <Loader2 size={14} className="text-emerald-600 animate-spin" />
-                ) : (
-                  <Search size={14} className="text-slate-400" />
-                )}
-              </div>
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search food, brand, or barcode (e.g. Nutella, Oatly, Cheerios)..."
-                value={searchQuery}
-                onFocus={() => {
-                  if (searchResults.length > 0) setShowSearchDropdown(true);
-                }}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-14 py-1.5 bg-slate-100/90 hover:bg-slate-100 border border-slate-200/80 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-3 focus:ring-emerald-500/15 transition-all font-medium"
-              />
-              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center">
-                {searchQuery ? (
-                  <button onClick={() => setSearchQuery("")} className="text-slate-400 hover:text-slate-600">
-                    <X size={12} />
-                  </button>
-                ) : (
-                  <kbd className="hidden sm:inline text-[9px] font-mono text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-200">
-                    ⌘K
-                  </kbd>
-                )}
-              </div>
-            </div>
-
-            {/* Live Search Dropdown */}
-            {showSearchDropdown && searchResults.length > 0 && (
-              <div className="absolute top-full left-0 mt-1.5 w-full bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden py-1 z-50 animate-in fade-in duration-150 max-h-[360px] flex flex-col">
-                <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                  <span className="font-bold text-slate-700">Matching Products ({searchResults.length})</span>
-                  <span className="text-[10px] text-slate-400">Click to view</span>
-                </div>
-                <div className="overflow-y-auto divide-y divide-slate-100 flex-1">
-                  {searchResults.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => handleSelectApiProduct(item)}
-                      className="px-3 py-2 hover:bg-emerald-50/60 flex items-center justify-between cursor-pointer transition-colors group"
-                    >
-                      <div className="truncate pr-2">
-                        <div className="font-bold text-xs text-slate-900 group-hover:text-emerald-700 truncate">
-                          {item.name}
-                        </div>
-                        <div className="text-[10px] text-slate-500 truncate">
-                          {item.brand || "Open Food Facts"} • {item.category || "Food"}
-                        </div>
-                      </div>
-                      <span className={`w-5 h-5 rounded text-[10px] font-black flex items-center justify-center shrink-0 ${getGradeBadge(item.nutri_score)}`}>
-                        {item.nutri_score}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right Header Actions */}
+          {/* Quick Utility Controls: Compare Tray & Dietary Filter */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => handleToggleCompare(analysis)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
-                isCurrentInComparison
-                  ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              onClick={() => setIsComparisonOpen(true)}
+              className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border ${
+                comparisonList.length > 0
+                  ? "bg-amber-50 text-amber-900 border-amber-300 shadow-xs"
+                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
               }`}
             >
-              <Scale size={13} />
-              <span>{isCurrentInComparison ? "In Compare" : "+ Compare"}</span>
+              <Scale size={14} className={comparisonList.length > 0 ? "text-amber-600" : "text-slate-400"} />
+              <span>Compare Tray</span>
               {comparisonList.length > 0 && (
-                <span className="ml-0.5 px-1 py-0.2 rounded bg-black/15 text-[10px] font-mono">
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-black font-mono">
                   {comparisonList.length}
                 </span>
               )}
@@ -412,71 +365,96 @@ export default function NutriVisionWorkbench() {
 
             <button
               onClick={() => setIsProfileModalOpen(true)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+              className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border ${
                 activeFiltersCount > 0
                   ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
               }`}
             >
-              <Shield size={13} className={activeFiltersCount > 0 ? "text-emerald-600" : "text-slate-400"} />
-              <span className="hidden sm:inline">Dietary Filter</span>
+              <Shield size={14} className={activeFiltersCount > 0 ? "text-emerald-600" : "text-slate-400"} />
+              <span className="hidden sm:inline">Dietary Safeguards</span>
               {activeFiltersCount > 0 && (
                 <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] font-black flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
-
-            <button
-              onClick={triggerUpload}
-              disabled={isScanning}
-              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5"
-            >
-              <Upload size={12} />
-              <span className="hidden md:inline">Scan Label</span>
-            </button>
-
-            <button
-              onClick={() => window.print()}
-              title="Print Dossier"
-              className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors hidden sm:flex"
-            >
-              <Printer size={13} />
-            </button>
           </div>
         </header>
 
         {/* ========================================================================= */}
-        {/* 2. ACTIVE PRODUCT HERO STRIP & PRESET CHIPS                              */}
+        {/* 2. PROMINENT 3-PILLAR PWA TABS (Explore • Scan • Search)                   */}
         {/* ========================================================================= */}
-        <div className="px-6 py-3 bg-slate-50/90 border-b border-slate-200/80 flex items-center justify-between gap-4 flex-wrap">
-          {/* Active Product Summary Pill */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-2xl border border-slate-200 shadow-xs">
-              <span className="text-xs text-slate-400 font-medium">Inspecting:</span>
-              <span className="text-xs font-black text-slate-900">{analysis.productName}</span>
-              <span className="text-[11px] text-slate-500 font-medium">({analysis.brand})</span>
-              <span className={`w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shadow-xs ${getGradeBadge(analysis.nutriScore)}`}>
-                {analysis.nutriScore}
-              </span>
-              <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded border border-orange-200">
-                NOVA {analysis.novaScore}
-              </span>
-            </div>
+        <div className="px-6 py-3.5 bg-slate-50/90 border-b border-slate-200 flex items-center justify-between gap-4 flex-wrap">
+          {/* Big Segmented Tab Switcher */}
+          <div className="flex items-center gap-2 p-1 bg-slate-200/80 rounded-2xl w-full sm:w-auto shadow-inner">
+            {/* Tab 1: Explore (Flagship / Inside the Box) */}
+            <button
+              onClick={() => setActiveTab("explore")}
+              className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2.5 ${
+                activeTab === "explore"
+                  ? "bg-white text-indigo-700 shadow-md ring-1 ring-black/5"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+              }`}
+            >
+              <Compass size={17} className={activeTab === "explore" ? "text-indigo-600 animate-pulse" : "text-slate-400"} />
+              <div className="text-left leading-tight">
+                <span className="block text-xs font-black">🧭 Explore Food</span>
+                <span className="text-[10px] text-slate-400 font-medium hidden md:block">Inside the Box & Nutrition</span>
+              </div>
+            </button>
+
+            {/* Tab 2: Scan Label */}
+            <button
+              onClick={() => setActiveTab("scan")}
+              className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2.5 ${
+                activeTab === "scan"
+                  ? "bg-white text-emerald-700 shadow-md ring-1 ring-black/5"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+              }`}
+            >
+              <ScanLine size={17} className={activeTab === "scan" ? "text-emerald-600" : "text-slate-400"} />
+              <div className="text-left leading-tight">
+                <span className="block text-xs font-black">📸 Scan Label</span>
+                <span className="text-[10px] text-slate-400 font-medium hidden md:block">Vision & Claims Truth</span>
+              </div>
+            </button>
+
+            {/* Tab 3: Search Database */}
+            <button
+              onClick={() => {
+                setActiveTab("search");
+                setTimeout(() => searchInputRef.current?.focus(), 50);
+              }}
+              className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2.5 ${
+                activeTab === "search"
+                  ? "bg-white text-blue-700 shadow-md ring-1 ring-black/5"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+              }`}
+            >
+              <Search size={17} className={activeTab === "search" ? "text-blue-600" : "text-slate-400"} />
+              <div className="text-left leading-tight">
+                <span className="block text-xs font-black">🔍 Search 3.2M</span>
+                <span className="text-[10px] text-slate-400 font-medium hidden md:block">Global Live Products</span>
+              </div>
+            </button>
           </div>
 
-          {/* Quick 1-Click Iconic Presets Ribbon */}
+          {/* Quick 1-Click Iconic Presets Strip */}
           <div className="flex items-center gap-1.5 overflow-x-auto text-xs py-0.5">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
-              Quick Presets:
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1 hidden lg:inline">
+              Staples:
             </span>
             {iconicPresets.map((item) => {
               const isSelected = activeProductKey === item.key || analysis.productName.includes(item.name);
               return (
                 <button
                   key={item.key}
-                  onClick={() => handleSelectProduct(item.key)}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 border ${
+                  onClick={() => {
+                    handleSelectProduct(item.key);
+                    setActiveTab("explore");
+                  }}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 border ${
                     isSelected
                       ? "bg-slate-900 text-white border-slate-900 shadow-xs"
                       : "bg-white text-slate-700 border-slate-200/90 hover:bg-slate-100"
@@ -494,272 +472,349 @@ export default function NutriVisionWorkbench() {
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. DISTINCT FOOD EXPLORATION TABS                                         */}
+        {/* 3. MAIN PWA VIEWPORT CONTAINER                                            */}
         {/* ========================================================================= */}
-        <nav className="px-6 bg-white border-b border-slate-200 flex items-center justify-between gap-4 overflow-x-auto">
-          <div className="flex items-center gap-1">
-            {/* Tab 1: Inside the Box (MAIN FOOD EXPLORATION FEATURE) */}
-            <button
-              onClick={() => setActiveTab("deconstruction")}
-              className={`py-3.5 px-4 text-xs font-black transition-all flex items-center gap-2 border-b-2 relative ${
-                activeTab === "deconstruction"
-                  ? "text-indigo-600 border-indigo-600 font-black bg-indigo-50/40"
-                  : "text-slate-500 border-transparent hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Layers size={15} className={activeTab === "deconstruction" ? "text-indigo-600" : "text-slate-400"} />
-              <span>🔬 Inside the Box (Ingredients)</span>
-              <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded-full bg-indigo-100 text-indigo-800">
-                Primary
-              </span>
-            </button>
+        <main className="p-4 sm:p-6 bg-[#F8FAFC] min-h-[640px] flex-1">
 
-            {/* Tab 2: Nutrition Facts & Claims */}
-            <button
-              onClick={() => setActiveTab("shopper")}
-              className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
-                activeTab === "shopper"
-                  ? "text-emerald-700 border-emerald-600 font-black bg-emerald-50/40"
-                  : "text-slate-500 border-transparent hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Scan size={15} className={activeTab === "shopper" ? "text-emerald-600" : "text-slate-400"} />
-              <span>🏷️ Nutrition Facts & Claims</span>
-            </button>
+          {/* ===================================================================== */}
+          {/* TAB 1: EXPLORE (INSIDE THE BOX & NUTRITIONAL ANATOMY)                 */}
+          {/* ===================================================================== */}
+          {activeTab === "explore" && (
+            <div className="flex flex-col gap-6 animate-in fade-in duration-200">
+              {/* Product Header Pill & Quick Reformulation Switch */}
+              <div className="flex items-center justify-between pb-1 flex-wrap gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-slate-500">Currently Analyzing:</span>
+                  <span className="text-sm font-black text-slate-900">{analysis.productName}</span>
+                  <span className="text-xs text-slate-500 font-medium">({analysis.brand})</span>
+                  <span className={`w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shadow-xs ${getGradeBadge(analysis.nutriScore)}`}>
+                    {analysis.nutriScore}
+                  </span>
+                </div>
 
-            {/* Tab 3: Recipe Reformulation */}
-            <button
-              onClick={() => setActiveTab("producer")}
-              className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
-                activeTab === "producer"
-                  ? "text-purple-700 border-purple-600 font-black bg-purple-50/40"
-                  : "text-slate-500 border-transparent hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <FlaskConical size={15} className={activeTab === "producer" ? "text-purple-600" : "text-slate-400"} />
-              <span>🧪 Recipe Reformulation</span>
-            </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleToggleCompare(analysis)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                      isCurrentInComparison
+                        ? "bg-amber-600 text-white border-amber-600"
+                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                    }`}
+                  >
+                    <Scale size={13} />
+                    <span>{isCurrentInComparison ? "In Compare Tray" : "+ Add to Compare"}</span>
+                  </button>
 
-            {/* Tab 4: Side-by-Side Comparison */}
-            <button
-              onClick={() => setActiveTab("comparison")}
-              className={`py-3.5 px-4 text-xs font-bold transition-all flex items-center gap-2 border-b-2 relative ${
-                activeTab === "comparison"
-                  ? "text-amber-700 border-amber-600 font-black bg-amber-50/40"
-                  : "text-slate-500 border-transparent hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Scale size={15} className={activeTab === "comparison" ? "text-amber-600" : "text-slate-400"} />
-              <span>⚖️ Product Comparison ({comparisonList.length})</span>
-            </button>
-          </div>
+                  <button
+                    onClick={() => setShowReformulationInExplore(!showReformulationInExplore)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                      showReformulationInExplore
+                        ? "bg-purple-600 text-white border-purple-600"
+                        : "bg-white text-purple-700 border-purple-200 hover:bg-purple-50"
+                    }`}
+                  >
+                    <FlaskConical size={13} />
+                    <span>{showReformulationInExplore ? "Hide Reformulation Lab" : "🧪 Test Recipe Reformulation"}</span>
+                  </button>
+                </div>
+              </div>
 
-          <div className="text-[11px] font-medium text-slate-400 hidden xl:flex items-center gap-2">
-            <span>Revised Nutri-Score 2024 Formula</span>
-            <span>•</span>
-            <span>Open Food Facts Database</span>
-          </div>
-        </nav>
+              {/* Recipe Reformulation Overlay (if toggled) */}
+              {showReformulationInExplore && (
+                <div className="p-6 bg-white rounded-3xl border border-purple-200 shadow-lg animate-in slide-in-from-top-4 duration-300">
+                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-purple-100">
+                    <div>
+                      <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                        <FlaskConical size={18} className="text-purple-600" />
+                        <span>Interactive Recipe Reformulation Simulator</span>
+                      </h3>
+                      <p className="text-xs text-slate-500">Simulate sugar/sodium reductions to improve Nutri-Score grade in real time</p>
+                    </div>
+                    <button
+                      onClick={() => setShowReformulationInExplore(false)}
+                      className="text-slate-400 hover:text-slate-600 p-1"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                  <ReformulationLab
+                    baseCalories={analysis.calories}
+                    baseSugars={analysis.sugars}
+                    baseSatFat={analysis.saturatedFat}
+                    baseSodium={analysis.sodium}
+                    baseProtein={analysis.protein}
+                    baseFiber={analysis.fiber}
+                  />
+                </div>
+              )}
 
-        {/* ========================================================================= */}
-        {/* 4. TAB CONTENTS CONTAINER                                                 */}
-        {/* ========================================================================= */}
-        <main className="p-6 flex-1 min-h-[580px]">
-
-          {/* TAB 1: INSIDE THE BOX (PRIMARY FOOD EXPLORATION) */}
-          {activeTab === "deconstruction" && (
-            <div className="animate-in fade-in duration-200">
+              {/* Primary Volumetric Deconstruction View */}
               <ProductDeconstructionView
                 analysis={analysis}
-                onSelectProduct={handleSelectProduct}
+                onSelectProduct={(key) => handleSelectProduct(key)}
               />
             </div>
           )}
 
-          {/* TAB 2: NUTRITION FACTS & CLAIMS */}
-          {activeTab === "shopper" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch animate-in fade-in duration-200">
-              {/* Col 1: Verified Package Image */}
-              <div>
-                <VisualGroundingCanvas
-                  productName={analysis.productName}
-                  brand={analysis.brand}
-                  imageUrl={analysis.imageUrl}
-                  calories={analysis.calories}
-                  sugars={analysis.sugars}
-                  saturatedFat={analysis.saturatedFat}
-                  sodium={analysis.sodium}
-                  protein={analysis.protein}
-                  boundingBoxes={analysis.boundingBoxes}
-                  selectedBoxId={selectedBoxId}
-                  onSelectBox={setSelectedBoxId}
-                />
-              </div>
-
-              {/* Col 2: Nutri-Score Speedometer Gauge */}
-              <div>
-                <NutriScoreGauge
-                  nutriScore={analysis.nutriScore}
-                  nutriScoreRaw={analysis.nutriScoreRaw}
-                  novaScore={analysis.novaScore}
-                  novaDescription={analysis.novaDescription}
-                  allergens={analysis.allergens}
-                  sugarCarbRatio={analysis.sugarCarbRatio}
-                  positiveScoreDrivers={analysis.positiveScoreDrivers}
-                  negativeScoreDrivers={analysis.negativeScoreDrivers}
-                />
-              </div>
-
-              {/* Col 3: Claims Verification & Healthier Swaps */}
-              <div className="flex flex-col gap-6 justify-between">
-                {analysis.claims && analysis.claims.length > 0 ? (
-                  <MarketingVsReality
-                    productName={analysis.productName}
-                    claims={analysis.claims}
-                  />
-                ) : (
-                  <KnowledgeGraphPanel
-                    productName={analysis.productName}
-                    ingredients={analysis.ingredients}
-                    additives={analysis.additives}
-                  />
-                )}
-
-                <ProductSwapList
-                  swaps={analysis.recommendedSwaps}
-                  onSelectSwap={handleSelectSwap}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: RECIPE REFORMULATION */}
-          {activeTab === "producer" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch animate-in fade-in duration-200">
-              <div className="lg:col-span-2">
-                <ReformulationLab
-                  baseCalories={analysis.calories}
-                  baseSugars={analysis.sugars}
-                  baseSatFat={analysis.saturatedFat}
-                  baseSodium={analysis.sodium}
-                  baseProtein={analysis.protein}
-                  baseFiber={analysis.fiber}
-                />
-              </div>
-              <div>
-                <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col gap-4 h-full">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">Product Baseline</span>
-                    <h3 className="text-base font-bold text-slate-900 mt-1">{analysis.productName}</h3>
-                    <p className="text-xs text-slate-500">{analysis.brand} • Current Grade {analysis.nutriScore}</p>
+          {/* ===================================================================== */}
+          {/* TAB 2: SCAN (LABEL SCANNER & CLAIMS TRUTH)                            */}
+          {/* ===================================================================== */}
+          {activeTab === "scan" && (
+            <div className="flex flex-col gap-6 animate-in fade-in duration-200">
+              {/* Scan Upload CTA Hero */}
+              <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-md border border-slate-800 flex items-center justify-between gap-6 flex-wrap">
+                <div className="space-y-1 max-w-xl">
+                  <div className="flex items-center gap-2">
+                    <Camera size={18} className="text-emerald-400" />
+                    <h2 className="text-lg font-black tracking-tight">Package Label Scanner & Visual Fact-Check</h2>
                   </div>
-
-                  <div className="space-y-3 pt-2 border-t border-slate-100 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Current Calories:</span>
-                      <span className="font-mono font-bold text-slate-800">{analysis.calories} kcal</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Current Sugars:</span>
-                      <span className="font-mono font-bold text-rose-600">{analysis.sugars}g / 100g</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Saturated Fat:</span>
-                      <span className="font-mono font-bold text-amber-600">{analysis.saturatedFat}g</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Sodium:</span>
-                      <span className="font-mono font-bold text-slate-800">{analysis.sodium}mg</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Protein:</span>
-                      <span className="font-mono font-bold text-emerald-600">{analysis.protein}g</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-auto p-4 bg-purple-50 rounded-2xl border border-purple-100 text-xs text-purple-900">
-                    <strong className="block font-bold mb-1">Reformulation Target:</strong>
-                    Lowering sugars by 40% shifts this recipe from <strong>Grade {analysis.nutriScore}</strong> to <strong>Grade B</strong>, qualifying for UK HFSS broadcast standards.
-                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Upload or snap any packaged grocery food label. Our system extracts the nutrition facts table, verifies marketing claims against statutory regulations, and suggests healthier alternatives.
+                  </p>
                 </div>
-              </div>
-            </div>
-          )}
 
-          {/* TAB 4: SIDE-BY-SIDE COMPARISON */}
-          {activeTab === "comparison" && (
-            <div className="animate-in fade-in duration-200">
-              <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col gap-6">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 flex-wrap gap-2">
-                  <div>
-                    <h2 className="text-lg font-bold text-slate-900">Side-by-Side Product Comparison</h2>
-                    <p className="text-xs text-slate-500">Compare nutrients and discover the healthier pick</p>
-                  </div>
+                <div className="flex items-center gap-3">
                   <button
-                    onClick={() => setIsComparisonOpen(true)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs transition-all"
+                    onClick={triggerUpload}
+                    disabled={isScanning}
+                    className="px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer"
                   >
-                    Open Comparison View
+                    {isScanning ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
+                        <span>Analyzing Packaging...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={16} />
+                        <span>Upload Product Photo</span>
+                      </>
+                    )}
                   </button>
                 </div>
+              </div>
 
-                {comparisonList.length === 0 ? (
-                  <div className="py-16 text-center text-slate-400">
-                    <Scale size={36} className="mx-auto mb-3 text-slate-300" />
-                    <p className="text-sm font-semibold text-slate-600">No products in comparison tray yet.</p>
-                    <p className="text-xs mt-1">Click "+ Compare" on any product to pin it for comparison.</p>
+              {/* 3-Column Scanner Workbench */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                {/* Col 1: Verified Real Image Grounding Canvas */}
+                <div>
+                  <VisualGroundingCanvas
+                    productName={analysis.productName}
+                    brand={analysis.brand}
+                    imageUrl={analysis.imageUrl}
+                    calories={analysis.calories}
+                    sugars={analysis.sugars}
+                    saturatedFat={analysis.saturatedFat}
+                    sodium={analysis.sodium}
+                    protein={analysis.protein}
+                    boundingBoxes={analysis.boundingBoxes}
+                    selectedBoxId={selectedBoxId}
+                    onSelectBox={setSelectedBoxId}
+                  />
+                </div>
+
+                {/* Col 2: Speedometer Gauge & Score Drivers */}
+                <div>
+                  <NutriScoreGauge
+                    nutriScore={analysis.nutriScore}
+                    nutriScoreRaw={analysis.nutriScoreRaw}
+                    novaScore={analysis.novaScore}
+                    novaDescription={analysis.novaDescription}
+                    allergens={analysis.allergens}
+                    sugarCarbRatio={analysis.sugarCarbRatio}
+                    positiveScoreDrivers={analysis.positiveScoreDrivers}
+                    negativeScoreDrivers={analysis.negativeScoreDrivers}
+                  />
+                </div>
+
+                {/* Col 3: Marketing Claims & Healthier Swaps */}
+                <div className="flex flex-col gap-6 justify-between">
+                  {analysis.claims && analysis.claims.length > 0 ? (
+                    <MarketingVsReality
+                      productName={analysis.productName}
+                      claims={analysis.claims}
+                    />
+                  ) : (
+                    <KnowledgeGraphPanel
+                      productName={analysis.productName}
+                      ingredients={analysis.ingredients}
+                      additives={analysis.additives}
+                    />
+                  )}
+
+                  <ProductSwapList
+                    swaps={analysis.recommendedSwaps}
+                    onSelectSwap={handleSelectSwap}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================================== */}
+          {/* TAB 3: SEARCH (IMMERSIVE 3.2M GLOBAL PRODUCT DISCOVERY)               */}
+          {/* ===================================================================== */}
+          {activeTab === "search" && (
+            <div className="flex flex-col gap-6 animate-in fade-in duration-200">
+              {/* Search Hero Header & Big Input */}
+              <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col gap-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <Search size={22} className="text-blue-600" />
+                    <span>Search Global Food & Grocery Products</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Live query over 3.2 million products from Open Food Facts & verified staples. Search by brand name (e.g. <em>Pepsi</em>, <em>Oatly</em>, <em>Doritos</em>, <em>Cheerios</em>), food name, or barcode.
+                  </p>
+                </div>
+
+                {/* Big Search Bar */}
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                    {isSearchingApi ? (
+                      <Loader2 size={18} className="text-blue-600 animate-spin" />
+                    ) : (
+                      <Search size={18} className="text-slate-400" />
+                    )}
+                  </div>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search brand, food, or barcode (e.g. Pepsi, Doritos, Chobani, Oats)..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-12 py-3.5 bg-slate-50 hover:bg-white focus:bg-white border-2 border-slate-200 focus:border-blue-500 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all shadow-inner"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter Pills: Grades & Popular Categories */}
+                <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-slate-100 text-xs">
+                  {/* Grade Filters */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-slate-400 text-[11px] uppercase mr-1">Grade:</span>
+                    {["ALL", "A", "B", "C", "D", "E"].map((g) => (
+                      <button
+                        key={g}
+                        onClick={() => setSearchGradeFilter(g)}
+                        className={`px-2.5 py-1 rounded-xl font-bold transition-all ${
+                          searchGradeFilter === g
+                            ? "bg-slate-900 text-white shadow-xs"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {g === "ALL" ? "All Grades" : `Grade ${g}`}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Category Filter Pills */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                    {["ALL", "Sodas", "Cereals", "Dairy", "Snacks", "Produce", "Pantry"].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSearchCategoryFilter(cat)}
+                        className={`px-3 py-1 rounded-xl font-bold transition-all shrink-0 ${
+                          searchCategoryFilter === cat
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {cat === "ALL" ? "All Categories" : cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Search Results Grid */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1 text-xs text-slate-500 font-medium">
+                  <span>
+                    Showing <strong>{filteredSearchResults.length}</strong> matching products {searchQuery ? `for "${searchQuery}"` : "from curated library"}
+                  </span>
+                  <span className="text-[11px] text-slate-400">Click any card to inspect inside</span>
+                </div>
+
+                {filteredSearchResults.length === 0 ? (
+                  <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400">
+                    <Search size={36} className="mx-auto mb-2 text-slate-300" />
+                    <p className="text-sm font-semibold text-slate-700">No products found</p>
+                    <p className="text-xs mt-1">Try searching for a different brand like "pepsi", "lays", "oat", or "barilla".</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {comparisonList.map((item, idx) => (
-                      <div key={idx} className="bg-slate-50 rounded-2xl border border-slate-200 p-4 flex flex-col justify-between">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {filteredSearchResults.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => handleSelectSearchedProduct(item)}
+                        className="bg-white rounded-2xl border border-slate-200/90 hover:border-blue-400 p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer group"
+                      >
                         <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className={`w-7 h-7 rounded-xl text-xs font-black flex items-center justify-center ${getGradeBadge(item.nutriScore)}`}>
-                              {item.nutriScore}
+                          {/* Card Top: Grade Badge & Brand */}
+                          <div className="flex items-center justify-between mb-3">
+                            <span className={`w-7 h-7 rounded-xl text-xs font-black flex items-center justify-center shadow-xs ${getGradeBadge(item.nutri_score)}`}>
+                              {item.nutri_score}
                             </span>
-                            <button
-                              onClick={() => handleRemoveFromCompare(idx)}
-                              className="text-slate-400 hover:text-rose-500 transition-colors p-1"
-                            >
-                              <X size={14} />
-                            </button>
+                            <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 truncate max-w-[140px]">
+                              {item.id}
+                            </span>
                           </div>
-                          <h4 className="font-bold text-sm text-slate-900">{item.productName}</h4>
-                          <p className="text-xs text-slate-500 mb-3">{item.brand}</p>
-                          <div className="space-y-2 text-xs border-t border-slate-200/80 pt-3">
+
+                          {/* Product Image Thumbnail if Available */}
+                          {item.image_url && (
+                            <div className="w-full h-28 mb-3 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-100">
+                              <img
+                                src={item.image_url}
+                                alt={item.name}
+                                className="max-h-full object-contain group-hover:scale-105 transition-transform"
+                                onError={(e) => {
+                                  // fallback if image fails
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          {/* Product Name & Brand */}
+                          <h4 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1 leading-snug">
+                            {item.name}
+                          </h4>
+                          <p className="text-xs text-slate-500 truncate mb-3">{item.brand || "Open Food Facts"}</p>
+
+                          {/* Nutrient Summary Pills */}
+                          <div className="grid grid-cols-2 gap-2 text-[11px] pt-2.5 border-t border-slate-100 text-slate-600">
                             <div className="flex justify-between">
-                              <span className="text-slate-500">Calories:</span>
-                              <span className="font-mono font-bold text-slate-800">{item.calories} kcal</span>
+                              <span>Energy:</span>
+                              <span className="font-mono font-bold text-slate-800">{item.energy} kcal</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-slate-500">Sugars:</span>
+                              <span>Sugars:</span>
                               <span className="font-mono font-bold text-rose-600">{item.sugars}g</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-slate-500">Sat Fat:</span>
-                              <span className="font-mono font-bold text-amber-600">{item.saturatedFat}g</span>
+                              <span>Sat Fat:</span>
+                              <span className="font-mono font-bold text-amber-600">{item.saturated_fat}g</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-slate-500">Sodium:</span>
+                              <span>Sodium:</span>
                               <span className="font-mono font-bold text-slate-800">{item.sodium}mg</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500">Protein:</span>
-                              <span className="font-mono font-bold text-emerald-600">{item.protein}g</span>
                             </div>
                           </div>
                         </div>
 
-                        <button
-                          onClick={() => {
-                            setAnalysis(item);
-                            setActiveTab("deconstruction");
-                          }}
-                          className="mt-4 w-full py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 transition-colors"
-                        >
-                          Inspect Inside
-                        </button>
+                        {/* Action CTA */}
+                        <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600 group-hover:text-blue-700">
+                          <span>Inspect Inside</span>
+                          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
                     ))}
                   </div>

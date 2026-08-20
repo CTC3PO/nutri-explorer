@@ -14,7 +14,7 @@ interface ProductItem {
   image_url?: string;
 }
 
-// Convert all 406 items into searchable items
+// Convert all local items into searchable items
 const LOCAL_CATALOG: ProductItem[] = Object.entries(HOUSEHOLD_PRODUCTS).map(([key, item]: [string, any]) => ({
   id: key,
   name: item.productName,
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ products: list.slice(0, 30), total: list.length, hasMore: false });
   }
 
-  // 1. Search local 406 catalog with priority matching (name -> brand -> ingredients -> category)
+  // 1. Search local catalog with priority matching (name -> brand -> ingredients -> category)
   const localMatches = LOCAL_CATALOG.filter((p) => {
     const nameMatch = p.name.toLowerCase().includes(query);
     const brandMatch = p.brand ? p.brand.toLowerCase().includes(query) : false;
@@ -53,55 +53,88 @@ export async function GET(req: NextRequest) {
     return (nameMatch || brandMatch || catMatch) && categoryFilterMatch;
   });
 
-  // 2. Query Open Food Facts 3.2M Live API in parallel for broader global results
+  // 2. Multi-Strategy Live Open Food Facts 3.2M Search
   let apiProducts: ProductItem[] = [];
+  const normalizedTag = query.replace(/\s+/g, "-");
+
+  const searchUrls: string[] = [];
+
+  // Strategy A: Brand Tag Search (e.g. pepsi, coca-cola, lays, doritos, snickers, oreo)
+  searchUrls.push(
+    `https://world.openfoodfacts.net/api/v2/search?brands_tags=${encodeURIComponent(
+      normalizedTag
+    )}&page=${page}&page_size=20&fields=code,product_name,product_name_en,brands,categories,nutriscore_grade,image_front_small_url,image_url,nutriments`
+  );
+
+  // Strategy B: Category Tag Search (e.g. sodas, cereals, yogurts, cheeses, chips, cookies)
+  searchUrls.push(
+    `https://world.openfoodfacts.net/api/v2/search?categories_tags=${encodeURIComponent(
+      normalizedTag
+    )}&page=${page}&page_size=20&fields=code,product_name,product_name_en,brands,categories,nutriscore_grade,image_front_small_url,image_url,nutriments`
+  );
+
+  // Strategy C: Barcode direct lookup if numeric
+  if (/^\d{6,14}$/.test(query)) {
+    searchUrls.unshift(
+      `https://world.openfoodfacts.net/api/v2/product/${encodeURIComponent(query)}.json`
+    );
+  }
+
   try {
-    const offUrl = `https://world.openfoodfacts.org/api/v2/search?search_terms=${encodeURIComponent(
-      query
-    )}&page=${page}&page_size=30&fields=code,product_name,product_name_en,brands,categories,nutriscore_grade,image_front_small_url,image_url,nutriments`;
+    const responses = await Promise.allSettled(
+      searchUrls.map((url) =>
+        fetch(url, {
+          headers: {
+            "User-Agent": "NutriVisionWorkbench/2.0 (contact@nutrivision.dev)",
+            Accept: "application/json",
+          },
+          next: { revalidate: 1800 },
+        }).then((res) => (res.ok ? res.json() : null))
+      )
+    );
 
-    const res = await fetch(offUrl, {
-      headers: {
-        "User-Agent": "NutriVisionWorkbench/1.0 (contact@nutrivision.dev)",
-      },
-      next: { revalidate: 1800 },
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      const rawProducts = data.products || [];
-
-      apiProducts = rawProducts
-        .filter((p: any) => p.product_name || p.product_name_en)
-        .map((p: any) => {
-          const nutriments = p.nutriments || {};
-          const energyKcal = Math.round(
-            nutriments["energy-kcal_100g"] ??
-              nutriments["energy-kcal"] ??
-              (nutriments["energy_100g"] ? Math.round(nutriments["energy_100g"] / 4.184) : 0)
-          );
-
-          const rawGrade = p.nutriscore_grade ? p.nutriscore_grade.toUpperCase() : "C";
-          const validGrade = ["A", "B", "C", "D", "E"].includes(rawGrade) ? rawGrade : "C";
-
-          return {
-            id: p.code,
-            name: p.product_name || p.product_name_en || "Food Product",
-            brand: p.brands ? p.brands.split(",")[0].trim() : "Open Food Facts",
-            category: p.categories ? p.categories.split(",")[0].trim() : "Packaged Food",
-            nutri_score: validGrade,
-            energy: energyKcal,
-            sugars: Math.round((nutriments["sugars_100g"] ?? 0) * 10) / 10,
-            saturated_fat: Math.round((nutriments["saturated-fat_100g"] ?? 0) * 10) / 10,
-            sodium: Math.round(
-              (nutriments["sodium_100g"] ?? (nutriments["salt_100g"] ? nutriments["salt_100g"] / 2.5 : 0)) * 1000
-            ),
-            image_url: p.image_front_small_url || p.image_url || undefined,
-          };
-        });
+    const rawList: any[] = [];
+    for (const res of responses) {
+      if (res.status === "fulfilled" && res.value) {
+        const val = res.value;
+        if (val.product) {
+          rawList.push(val.product);
+        } else if (Array.isArray(val.products)) {
+          rawList.push(...val.products);
+        }
+      }
     }
+
+    apiProducts = rawList
+      .filter((p: any) => p && (p.product_name || p.product_name_en) && p.code)
+      .map((p: any) => {
+        const nutriments = p.nutriments || {};
+        const energyKcal = Math.round(
+          nutriments["energy-kcal_100g"] ??
+            nutriments["energy-kcal"] ??
+            (nutriments["energy_100g"] ? Math.round(nutriments["energy_100g"] / 4.184) : 0)
+        );
+
+        const rawGrade = p.nutriscore_grade ? p.nutriscore_grade.toUpperCase() : "C";
+        const validGrade = ["A", "B", "C", "D", "E"].includes(rawGrade) ? rawGrade : "C";
+
+        return {
+          id: p.code,
+          name: p.product_name || p.product_name_en || "Food Product",
+          brand: p.brands ? p.brands.split(",")[0].trim() : "Open Food Facts",
+          category: p.categories ? p.categories.split(",")[0].trim() : "Packaged Food",
+          nutri_score: validGrade,
+          energy: energyKcal,
+          sugars: Math.round((nutriments["sugars_100g"] ?? 0) * 10) / 10,
+          saturated_fat: Math.round((nutriments["saturated-fat_100g"] ?? 0) * 10) / 10,
+          sodium: Math.round(
+            (nutriments["sodium_100g"] ?? (nutriments["salt_100g"] ? nutriments["salt_100g"] / 2.5 : 0)) * 1000
+          ),
+          image_url: p.image_front_small_url || p.image_url || undefined,
+        };
+      });
   } catch (error) {
-    console.warn("OpenFoodFacts search offline, returning local matches:", error);
+    console.warn("Open Food Facts search error:", error);
   }
 
   // 3. Combine local catalog matches (top priority) + Open Food Facts API matches, removing duplicates
@@ -114,8 +147,8 @@ export async function GET(req: NextRequest) {
   const finalProducts = Array.from(combinedMap.values());
 
   return NextResponse.json({
-    products: finalProducts.slice(0, 50),
+    products: finalProducts.slice(0, 40),
     total: finalProducts.length,
-    hasMore: finalProducts.length > 50,
+    hasMore: finalProducts.length > 40,
   });
 }

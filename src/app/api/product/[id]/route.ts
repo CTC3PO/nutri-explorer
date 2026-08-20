@@ -14,29 +14,43 @@ export async function GET(
     return NextResponse.json(HOUSEHOLD_PRODUCTS[id]);
   }
 
-  // Also check by product key or barcode
+  // Also check by product key or barcode in local dictionary
   for (const [key, item] of Object.entries(HOUSEHOLD_PRODUCTS)) {
     if (key.toLowerCase() === id.toLowerCase()) {
       return NextResponse.json(item);
     }
   }
 
-  // 2. Fetch live from Open Food Facts API
+  // 2. Fetch live from Open Food Facts API (try .net mirror first, then .org)
   try {
-    const offUrl = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(id)}.json`;
-    const res = await fetch(offUrl, {
-      headers: {
-        "User-Agent": "NutriVisionWorkbench/1.0 (contact@nutrivision.dev)",
-      },
-      next: { revalidate: 3600 },
-    });
+    const urls = [
+      `https://world.openfoodfacts.net/api/v2/product/${encodeURIComponent(id)}.json`,
+      `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(id)}.json`
+    ];
 
-    if (!res.ok) {
-      return NextResponse.json({ error: "Product not found on Open Food Facts" }, { status: 404 });
+    let data: any = null;
+    for (const u of urls) {
+      try {
+        const res = await fetch(u, {
+          headers: {
+            "User-Agent": "NutriVisionWorkbench/2.0 (contact@nutrivision.dev)",
+            Accept: "application/json",
+          },
+          next: { revalidate: 3600 },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.status === 1 && json.product) {
+            data = json;
+            break;
+          }
+        }
+      } catch (e) {
+        // continue to next URL
+      }
     }
 
-    const data = await res.json();
-    if (data.status !== 1 || !data.product) {
+    if (!data || !data.product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
@@ -56,7 +70,12 @@ export async function GET(
     );
     const protein = Math.round((nutriments["proteins_100g"] ?? 0) * 10) / 10;
     const fiber = Math.round((nutriments["fiber_100g"] ?? 0) * 10) / 10;
+    const carbs = Math.round((nutriments["carbohydrates_100g"] ?? 0) * 10) / 10;
     const fvPercent = Math.round(nutriments["fruits-vegetables-nuts-estimate-from-ingredients_100g"] ?? 0);
+
+    const sugarCarbRatio = carbs > 0 
+      ? Math.min(100, Math.round((sugars / carbs) * 1000) / 10) 
+      : (sugars > 0 ? 100 : 0);
 
     // Compute Nutri-Score
     const calculated = calculateNutriScore({
@@ -72,6 +91,21 @@ export async function GET(
     const grade: NutriGrade = (p.nutriscore_grade?.toUpperCase() as NutriGrade) || calculated.grade;
     const nova: 1 | 2 | 3 | 4 = (p.nova_group as 1 | 2 | 3 | 4) || (sugars > 15 || saturatedFat > 5 ? 4 : 2);
 
+    // Generate score drivers
+    const positiveScoreDrivers: string[] = [];
+    const negativeScoreDrivers: string[] = [];
+
+    if (fiber >= 3) positiveScoreDrivers.push(`High Dietary Fiber (${fiber}g / 100g)`);
+    if (protein >= 6) positiveScoreDrivers.push(`Good Protein Source (${protein}g / 100g)`);
+    if (saturatedFat <= 1.5) positiveScoreDrivers.push(`Low Saturated Fat (${saturatedFat}g)`);
+    if (sodiumMg <= 120) positiveScoreDrivers.push(`Low Sodium (${sodiumMg}mg)`);
+    if (sugars <= 4.5) positiveScoreDrivers.push(`Low Sugar (${sugars}g)`);
+
+    if (sugars >= 15) negativeScoreDrivers.push(`High Sugar Content (${sugars}g / 100g)`);
+    if (saturatedFat >= 5) negativeScoreDrivers.push(`High Saturated Fat (${saturatedFat}g)`);
+    if (sodiumMg >= 600) negativeScoreDrivers.push(`High Sodium (${sodiumMg}mg)`);
+    if (calories >= 400) negativeScoreDrivers.push(`High Energy Density (${calories} kcal)`);
+
     // Parse Ingredients
     const rawIngredientsText: string = p.ingredients_text_en || p.ingredients_text || "";
     const ingredientList: string[] = rawIngredientsText
@@ -81,7 +115,7 @@ export async function GET(
     // Build Deconstruction
     const deconstructed: IngredientComponent[] = ingredientList.slice(0, 6).map((ing, idx) => {
       const colors = ["bg-emerald-600", "bg-amber-500", "bg-sky-600", "bg-rose-500", "bg-indigo-600", "bg-orange-500"];
-      const estPercent = idx === 0 ? Math.max(30, 100 - (ingredientList.length - 1) * 15) : Math.max(5, Math.round(70 / ingredientList.length));
+      const estPercent = idx === 0 ? Math.max(35, 100 - (ingredientList.length - 1) * 12) : Math.max(5, Math.round(65 / ingredientList.length));
 
       return {
         id: `ing-${idx}`,
@@ -131,6 +165,10 @@ export async function GET(
       sodium: sodiumMg,
       protein,
       fiber,
+      carbohydrates: carbs,
+      sugarCarbRatio,
+      positiveScoreDrivers,
+      negativeScoreDrivers,
       fruitVegetablesPercentage: fvPercent,
       nutriScore: grade,
       nutriScoreRaw: calculated.score,
@@ -143,7 +181,7 @@ export async function GET(
           : nova === 3
           ? "Processed food made by adding salt/sugar/fat."
           : "Ultra-processed industrial formulation with synthetic additives.",
-      imageUrl: p.image_front_url || p.image_url || "/samples/oats_label.jpg",
+      imageUrl: p.image_front_url || p.image_front_small_url || p.image_url || "/samples/oats_label.jpg",
       analyzedAt: new Date().toISOString(),
       modelEngine: "Open Food Facts Live API Reference",
       boundingBoxes: [
@@ -170,15 +208,15 @@ export async function GET(
       recommendedSwaps: [
         {
           id: "swap-live-1",
-          name: "Organic Whole Food Alternative",
-          brand: "Clean Brand",
-          nutriScore: "A",
+          name: "Healthier Alternative",
+          brand: "Organic / Low Sugar",
+          nutriScore: grade === "E" || grade === "D" ? "B" : "A",
           novaScore: 1,
-          calories: Math.max(50, calories - 50),
-          sugars: Math.max(1, sugars * 0.4),
-          vectorMatchPercent: 94,
-          tag: "Cleaner Nutritional Profile",
-          image: "🥣",
+          calories: Math.max(40, calories - 60),
+          sugars: Math.max(1, sugars * 0.3),
+          vectorMatchPercent: 92,
+          tag: "Lower Sugar & Saturated Fat",
+          image: "🥗",
         },
       ],
     };
