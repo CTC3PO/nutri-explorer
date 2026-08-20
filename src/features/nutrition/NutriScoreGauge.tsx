@@ -3,7 +3,7 @@
 import React from "react";
 import { NutriGrade } from "@/lib/nutri-score";
 import { NovaGrade, AllergenStatus } from "@/shared/types/nutrivision";
-import { Info, ShieldCheck, Check } from "lucide-react";
+import { Info, ShieldCheck, Check, TrendingUp, TrendingDown, Sparkles } from "lucide-react";
 
 interface NutriScoreGaugeProps {
   nutriScore: NutriGrade;
@@ -11,6 +11,9 @@ interface NutriScoreGaugeProps {
   novaScore: NovaGrade;
   novaDescription: string;
   allergens: AllergenStatus[];
+  sugarCarbRatio?: number;
+  positiveScoreDrivers?: string[];
+  negativeScoreDrivers?: string[];
 }
 
 export function NutriScoreGauge({
@@ -18,6 +21,9 @@ export function NutriScoreGauge({
   novaScore,
   novaDescription,
   allergens,
+  sugarCarbRatio,
+  positiveScoreDrivers,
+  negativeScoreDrivers,
 }: NutriScoreGaugeProps) {
   // Needle rotation calculation based on grade
   const gradeAngles: Record<NutriGrade, number> = {
@@ -31,25 +37,24 @@ export function NutriScoreGauge({
   const needleAngle = gradeAngles[nutriScore] ?? -65;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] p-5 flex flex-col justify-between h-full min-h-[580px]">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] p-5 flex flex-col justify-between h-full min-h-[580px] gap-4">
       {/* Top Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div>
           <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-600">Nutritional Quality</span>
-          <h3 className="text-base font-bold text-slate-900 leading-tight">Nutri-Score & Safeguards</h3>
+          <h3 className="text-base font-bold text-slate-900 leading-tight">Nutri-Score & Score Drivers</h3>
         </div>
-        <button className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors">
-          <Info size={14} />
-        </button>
+        <div className="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] font-bold text-slate-600 border border-slate-200">
+          Official 2024 Formula
+        </div>
       </div>
 
       {/* Main Semi-Circular Speedometer Gauge Section */}
-      <div className="my-2 bg-gradient-to-b from-slate-50 to-white rounded-2xl border border-slate-100 p-4 flex flex-col items-center justify-center relative">
+      <div className="bg-gradient-to-b from-slate-50 to-white rounded-2xl border border-slate-100 p-4 flex flex-col items-center justify-center relative">
         <div className="w-full flex items-center justify-around gap-2">
           {/* Semi-Circular SVG Speedometer Gauge */}
           <div className="relative w-[180px] h-[110px] flex items-end justify-center">
             <svg viewBox="0 0 200 120" className="w-full h-full">
-              {/* Arc Segments: A (Green), B (Lime), C (Yellow), D (Orange), E (Red) */}
               <defs>
                 <line id="needle" x1="100" y1="100" x2="100" y2="25" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" />
               </defs>
@@ -105,82 +110,103 @@ export function NutriScoreGauge({
         </div>
       </div>
 
+      {/* Hidden Sugar Ratio Meter (Carbohydrate Quality) */}
+      {sugarCarbRatio !== undefined && (
+        <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
+          <div className="flex items-center justify-between text-xs mb-1.5">
+            <span className="font-bold text-slate-800 flex items-center gap-1.5">
+              <span>Hidden Sugar in Carbs:</span>
+            </span>
+            <span className={`font-mono font-black px-2 py-0.5 rounded text-[11px] ${
+              sugarCarbRatio <= 10 
+                ? "bg-emerald-100 text-emerald-800" 
+                : sugarCarbRatio <= 35 
+                ? "bg-lime-100 text-lime-800" 
+                : sugarCarbRatio <= 60 
+                ? "bg-amber-100 text-amber-800" 
+                : "bg-rose-100 text-rose-800"
+            }`}>
+              {sugarCarbRatio.toFixed(1)}% Free Sugar
+            </span>
+          </div>
+
+          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden flex">
+            <div 
+              style={{ width: `${Math.min(100, Math.max(2, sugarCarbRatio))}%` }} 
+              className={`h-full transition-all duration-500 ${
+                sugarCarbRatio <= 10 
+                  ? "bg-emerald-500" 
+                  : sugarCarbRatio <= 35 
+                  ? "bg-lime-500" 
+                  : sugarCarbRatio <= 60 
+                  ? "bg-amber-500" 
+                  : "bg-rose-500"
+              }`}
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+            <span>Complex Whole Grain</span>
+            <span>Pure Sugar Matrix</span>
+          </div>
+        </div>
+      )}
+
+      {/* Key Score Drivers Section (Positive & Negative Factors) */}
+      <div className="space-y-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+          Key Nutritional Drivers
+        </span>
+        
+        {/* Positive Drivers */}
+        {positiveScoreDrivers && positiveScoreDrivers.length > 0 && (
+          <div className="space-y-1">
+            {positiveScoreDrivers.map((driver, idx) => (
+              <div key={idx} className="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/70 border border-emerald-200/60 px-2.5 py-1 rounded-lg font-medium">
+                <span className="text-emerald-600 font-bold">✓</span>
+                <span>{driver}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Negative Drivers */}
+        {negativeScoreDrivers && negativeScoreDrivers.length > 0 && (
+          <div className="space-y-1">
+            {negativeScoreDrivers.map((driver, idx) => (
+              <div key={idx} className="flex items-center gap-1.5 text-xs text-rose-800 bg-rose-50/70 border border-rose-200/60 px-2.5 py-1 rounded-lg font-medium">
+                <span className="text-rose-600 font-bold">✕</span>
+                <span>{driver}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Two Mini Safeguard Modules: NOVA & Allergen */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
         {/* NOVA Score Card */}
-        <div className="bg-slate-50/80 rounded-xl border border-slate-200/70 p-3.5 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-slate-800">NOVA score</span>
-            <div className="w-6 h-6 rounded-lg bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-sm">
+        <div className="bg-slate-50/80 rounded-xl border border-slate-200/70 p-3 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-bold text-slate-800">NOVA Score</span>
+            <div className="w-5 h-5 rounded bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-xs">
               {novaScore}
             </div>
           </div>
-
-          <span className="text-[11px] text-slate-500 mb-2">Degree of processing</span>
-
-          {/* 4-Step Segmented Bar */}
-          <div className="flex gap-1 mb-2">
-            {[1, 2, 3, 4].map((step) => (
-              <div
-                key={step}
-                className={`h-2 flex-1 rounded-full transition-all ${
-                  step <= novaScore
-                    ? step === 1
-                      ? "bg-emerald-500"
-                      : step === 2
-                      ? "bg-lime-500"
-                      : step === 3
-                      ? "bg-amber-500"
-                      : "bg-rose-500"
-                    : "bg-slate-200"
-                }`}
-              />
-            ))}
-          </div>
-
-          <p className="text-[10px] text-slate-600 font-medium line-clamp-2 leading-tight">
+          <p className="text-[10px] text-slate-600 font-medium line-clamp-1">
             {novaDescription}
           </p>
         </div>
 
         {/* Allergen Guardrails Card */}
-        <div className="bg-slate-50/80 rounded-xl border border-slate-200/70 p-3.5 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-slate-800">Allergen status</span>
-            <ShieldCheck size={16} className="text-emerald-600" />
+        <div className="bg-slate-50/80 rounded-xl border border-slate-200/70 p-3 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-bold text-slate-800">Allergens</span>
+            <ShieldCheck size={14} className="text-emerald-600" />
           </div>
-
-          {/* 4 Allergen Circular Icon Badges with Green Checkmarks */}
-          <div className="flex items-center gap-1.5 my-1">
-            {allergens.slice(0, 4).map((allergen) => (
-              <div
-                key={allergen.id}
-                title={allergen.name}
-                className="relative w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs shadow-xs"
-              >
-                <span>{allergen.icon}</span>
-                {!allergen.detected && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full flex items-center justify-center text-white">
-                    <Check size={8} strokeWidth={3} />
-                  </span>
-                )}
-              </div>
-            ))}
-            <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400">
-              •••
-            </div>
-          </div>
-
-          <p className="text-[10px] text-emerald-700 font-semibold leading-tight mt-1">
-            Verified Safe • No critical allergen alerts
+          <p className="text-[10px] text-emerald-700 font-semibold leading-tight">
+            Verified Standards
           </p>
         </div>
-      </div>
-
-      {/* Nutri-Score Guidance Note */}
-      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-        <span>Framework: <strong>Santé Publique France</strong></span>
-        <span className="text-emerald-700 font-semibold">100% Verified</span>
       </div>
     </div>
   );

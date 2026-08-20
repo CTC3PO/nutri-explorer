@@ -604,6 +604,9 @@ export default function NutriVisionWorkbench() {
                   novaScore={analysis.novaScore}
                   novaDescription={analysis.novaDescription}
                   allergens={analysis.allergens}
+                  sugarCarbRatio={analysis.sugarCarbRatio}
+                  positiveScoreDrivers={analysis.positiveScoreDrivers}
+                  negativeScoreDrivers={analysis.negativeScoreDrivers}
                 />
               </div>
 

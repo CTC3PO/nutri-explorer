@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { NutriVisionAnalysis, IngredientComponent } from "@/shared/types/nutrivision";
 import { HOUSEHOLD_PRODUCTS } from "@/lib/mock-data";
-import { Layers, ShieldCheck, AlertCircle, Info, Sparkles, Check, ArrowRight, Filter, Search } from "lucide-react";
+import { Layers, ShieldCheck, AlertCircle, Info, Sparkles, Check, ArrowRight, Filter, Search, TrendingUp, TrendingDown } from "lucide-react";
 
 interface ProductDeconstructionViewProps {
   analysis: NutriVisionAnalysis;
@@ -62,6 +62,8 @@ export function ProductDeconstructionView({
     }
   };
 
+  const sugarRatio = analysis.sugarCarbRatio ?? (analysis.carbohydrates ? (analysis.sugars / analysis.carbohydrates) * 100 : 0);
+
   return (
     <div className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
       {/* ===================================================================== */}
@@ -73,7 +75,7 @@ export function ProductDeconstructionView({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/80">
-                X-Ray Volumetric Deconstruction
+                Volumetric Ingredient Deconstruction
               </span>
               <span className="text-xs text-slate-400 font-medium hidden sm:inline">• What are you actually eating?</span>
             </div>
@@ -83,7 +85,17 @@ export function ProductDeconstructionView({
             <p className="text-xs text-slate-500 mt-0.5">{analysis.category || "Packaged Grocery"} • {analysis.servingSize || "100g serving"}</p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Hidden Sugar Ratio Chip */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs">
+              <span className="text-slate-500 text-[11px]">Hidden Sugar:</span>
+              <span className={`font-mono font-black text-xs px-1.5 py-0.2 rounded ${
+                sugarRatio <= 10 ? "text-emerald-700 bg-emerald-50" : sugarRatio <= 40 ? "text-amber-700 bg-amber-50" : "text-rose-700 bg-rose-50"
+              }`}>
+                {sugarRatio.toFixed(0)}% of carbs
+              </span>
+            </div>
+
             <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs font-bold text-slate-700">
               <span className="text-slate-500 text-[11px]">Nutri-Score:</span>
               <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black shadow-xs ${getGradeBadge(analysis.nutriScore)}`}>
@@ -108,7 +120,7 @@ export function ProductDeconstructionView({
               <span>Ingredient Weight Composition (% by Volume)</span>
             </span>
             <span className="text-[11px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">
-              Click any ingredient to inspect metabolic impact
+              Click any slice to inspect metabolic impact
             </span>
           </div>
 
@@ -195,6 +207,47 @@ export function ProductDeconstructionView({
             )}
           </div>
         )}
+
+        {/* Nutritional Score Drivers Row */}
+        {(analysis.positiveScoreDrivers || analysis.negativeScoreDrivers) && (
+          <div className="pt-2 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {/* Positive Factors */}
+            <div className="bg-emerald-50/60 border border-emerald-200/60 rounded-xl p-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1.5">
+                ✓ Positive Health Factors
+              </span>
+              <div className="space-y-1">
+                {analysis.positiveScoreDrivers && analysis.positiveScoreDrivers.length > 0 ? (
+                  analysis.positiveScoreDrivers.map((d, idx) => (
+                    <div key={idx} className="text-emerald-900 font-medium text-[11px]">
+                      • {d}
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-slate-400 text-[11px]">None detected</span>
+                )}
+              </div>
+            </div>
+
+            {/* Negative Factors */}
+            <div className="bg-rose-50/60 border border-rose-200/60 rounded-xl p-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 block mb-1.5">
+                ✕ Health Risk Factors
+              </span>
+              <div className="space-y-1">
+                {analysis.negativeScoreDrivers && analysis.negativeScoreDrivers.length > 0 ? (
+                  analysis.negativeScoreDrivers.map((d, idx) => (
+                    <div key={idx} className="text-rose-900 font-medium text-[11px]">
+                      • {d}
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-emerald-700 text-[11px]">Clean profile — no high risk penalties</span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ===================================================================== */}
@@ -273,7 +326,7 @@ export function ProductDeconstructionView({
       <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm flex flex-col gap-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-3">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Food Spectrum Catalog</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Food Catalog Explorer</span>
             <h3 className="text-base font-bold text-slate-900">Explore & Switch Food Items ({filteredProducts.length} items)</h3>
           </div>
 
@@ -283,13 +336,13 @@ export function ProductDeconstructionView({
               <button
                 key={g}
                 onClick={() => setGradeFilter(g)}
-                className={`px-2 py-0.8 rounded-lg font-bold transition-all ${
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
                   gradeFilter === g
                     ? "bg-slate-900 text-white shadow-xs"
                     : "text-slate-600 hover:bg-slate-200/80"
                 }`}
               >
-                {g === "ALL" ? "All" : g}
+                {g === "ALL" ? "All Grades" : `Grade ${g}`}
               </button>
             ))}
           </div>

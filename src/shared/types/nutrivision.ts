@@ -75,6 +75,10 @@ export interface NutriVisionAnalysis {
   sodium: number;
   protein: number;
   fiber: number;
+  carbohydrates?: number;
+  sugarCarbRatio?: number;
+  positiveScoreDrivers?: string[];
+  negativeScoreDrivers?: string[];
   fruitVegetablesPercentage: number;
   
   // Nutri-Score calculation

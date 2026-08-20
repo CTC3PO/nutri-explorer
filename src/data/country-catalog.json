@@ -125,7 +125,15 @@
         "tag": "Antioxidant Rich",
         "image": "\ud83e\uded0"
       }
-    ]
+    ],
+    "carbohydrates": 14.0,
+    "sugarCarbRatio": 0.0,
+    "positiveScoreDrivers": [
+      "100% Whole Food Pectin Fiber (2.4g)",
+      "Zero Saturated Fat & Sodium",
+      "Zero Added Sugars"
+    ],
+    "negativeScoreDrivers": []
   },
   "us_quaker_oats": {
     "country": "United States",
@@ -253,7 +261,16 @@
         "tag": "Lowest Glycemic Index",
         "image": "\ud83e\udd63"
       }
-    ]
+    ],
+    "carbohydrates": 67.0,
+    "sugarCarbRatio": 1.5,
+    "positiveScoreDrivers": [
+      "100% Whole Grain Beta-Glucan (10g Fiber)",
+      "Rich Plant Protein (13g)",
+      "Near-Zero Sugar (1.0g)",
+      "Low Saturated Fat (1.2g)"
+    ],
+    "negativeScoreDrivers": []
   },
   "us_chobani_greek": {
     "country": "United States",
@@ -399,7 +416,15 @@
         "tag": "Higher Protein",
         "image": "\ud83e\udd5b"
       }
-    ]
+    ],
+    "carbohydrates": 3.6,
+    "sugarCarbRatio": 0.0,
+    "positiveScoreDrivers": [
+      "High Protein Density (10.3g / 100g)",
+      "Zero Saturated Fat (0.0g)",
+      "Live Active Probiotic Cultures"
+    ],
+    "negativeScoreDrivers": []
   },
   "us_kind_dark_chocolate": {
     "country": "United States",
@@ -583,6 +608,16 @@
         "tag": "Zero Added Sugars",
         "image": "\ud83c\udf6b"
       }
+    ],
+    "carbohydrates": 23.0,
+    "sugarCarbRatio": 54.3,
+    "positiveScoreDrivers": [
+      "Prebiotic Chicory Fiber (17.5g)",
+      "Whole Almond Protein (15g)"
+    ],
+    "negativeScoreDrivers": [
+      "Saturated Fat from Cocoa/Palm (7.5g)",
+      "Moderate Added Sugars (12.5g)"
     ]
   },
   "us_froot_loops": {
@@ -810,6 +845,17 @@
         "tag": "Low Sugar Classic",
         "image": "\ud83e\udd63"
       }
+    ],
+    "carbohydrates": 47.0,
+    "sugarCarbRatio": 65.5,
+    "positiveScoreDrivers": [
+      "Fiber Fortification (5.1g)",
+      "Low Saturated Fat (1.3g)"
+    ],
+    "negativeScoreDrivers": [
+      "Refined Free Sugars (30.8g / 100g)",
+      "Elevated Sodium (538mg)",
+      "Synthetic Azo Dyes (Red 40, Yellow 5)"
     ]
   },
   "us_nutella": {
@@ -1031,6 +1077,17 @@
         "tag": "Palm Oil Free",
         "image": "\ud83c\udf6b"
       }
+    ],
+    "carbohydrates": 57.5,
+    "sugarCarbRatio": 97.9,
+    "positiveScoreDrivers": [
+      "Natural Hazelnuts (13%)",
+      "Low Sodium (42mg)"
+    ],
+    "negativeScoreDrivers": [
+      "Excess Free Sugars (56.3g / 100g)",
+      "High Palmitic Saturated Fat (10.6g)",
+      "Calorie Density (539 kcal)"
     ]
   },
   "fr_organic_baguette": {
@@ -1188,6 +1245,16 @@
         "tag": "Higher Fiber",
         "image": "\ud83e\udd56"
       }
+    ],
+    "carbohydrates": 55.0,
+    "sugarCarbRatio": 2.7,
+    "positiveScoreDrivers": [
+      "Low Sugars (1.5g)",
+      "Low Saturated Fat (0.3g)",
+      "Zero Chemical Additives"
+    ],
+    "negativeScoreDrivers": [
+      "Elevated Sodium (550mg)"
     ]
   },
   "fr_bonnemaman_confiture": {
@@ -1346,6 +1413,15 @@
         "tag": "No Added Sucrose",
         "image": "\ud83c\udf53"
       }
+    ],
+    "carbohydrates": 59.0,
+    "sugarCarbRatio": 98.3,
+    "positiveScoreDrivers": [
+      "Organic Strawberries (50%)",
+      "Zero Saturated Fat & Sodium"
+    ],
+    "negativeScoreDrivers": [
+      "High Concentrated Sucrose (58g / 100g)"
     ]
   },
   "ch_lindt_excellence_85": {
@@ -1504,6 +1580,16 @@
         "tag": "Only 7g Sugar",
         "image": "\ud83c\udf6b"
       }
+    ],
+    "carbohydrates": 19.0,
+    "sugarCarbRatio": 57.8,
+    "positiveScoreDrivers": [
+      "Low Sugar for Chocolate (11g)",
+      "Cocoa Flavanol Fiber (14g)",
+      "Natural Protein (11g)"
+    ],
+    "negativeScoreDrivers": [
+      "Cocoa Butter Saturated Fat (27g)"
     ]
   },
   "ch_ovomaltine_crisp": {
@@ -1672,6 +1758,16 @@
         "tag": "Pure Nut Spread",
         "image": "\ud83c\udf30"
       }
+    ],
+    "carbohydrates": 58.0,
+    "sugarCarbRatio": 82.8,
+    "positiveScoreDrivers": [
+      "Swiss Malt Extract (33%)",
+      "Low Sodium (90mg)"
+    ],
+    "negativeScoreDrivers": [
+      "High Total Sugars (48g / 100g)",
+      "Saturated Fat (8.5g)"
     ]
   },
   "de_alnatura_muesli": {
@@ -1822,7 +1918,16 @@
         "tag": "Single Grain Classic",
         "image": "\ud83e\udd63"
       }
-    ]
+    ],
+    "carbohydrates": 60.0,
+    "sugarCarbRatio": 3.0,
+    "positiveScoreDrivers": [
+      "5-Grain Organic Fiber (11.2g)",
+      "High Plant Protein (12.5g)",
+      "Zero Added Sugar (1.8g)",
+      "Low Saturated Fat (1.1g)"
+    ],
+    "negativeScoreDrivers": []
   },
   "es_barilla_pesto": {
     "country": "Spain",
@@ -2008,6 +2113,16 @@
         "tag": "-50% Sodium",
         "image": "\ud83e\uded2"
       }
+    ],
+    "carbohydrates": 5.5,
+    "sugarCarbRatio": 12.0,
+    "positiveScoreDrivers": [
+      "Fresh Italian Basil (38%)",
+      "Natural Cashew & EVOO Healthy Fats"
+    ],
+    "negativeScoreDrivers": [
+      "High Sodium Content (980mg / 100g)",
+      "Saturated Fat from Cheese (5.5g)"
     ]
   },
   "se_oatly_barista": {
@@ -2176,6 +2291,17 @@
         "tag": "Oil-Free Organic",
         "image": "\ud83e\udd5b"
       }
+    ],
+    "carbohydrates": 12.0,
+    "sugarCarbRatio": 28.3,
+    "positiveScoreDrivers": [
+      "Low Saturated Fat (0.3g)",
+      "Low Sodium (40mg)",
+      "Natural Oat Base"
+    ],
+    "negativeScoreDrivers": [
+      "Low Protein (1.0g)",
+      "Added Rapeseed Oil Blend"
     ]
   }
 }
